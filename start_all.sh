@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 docker network create web
 docker-compose \
 	-f docker-compose-traefik.yml \

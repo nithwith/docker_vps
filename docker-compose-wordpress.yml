@@ -4,7 +4,6 @@ services:
   wordpress:
     image: wordpress
     container_name: wordpress
-    restart: unless-stopped
     depends_on:
       - mysql
     environment:
