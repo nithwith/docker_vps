@@ -1,6 +1,3 @@
-debug = false
-
-logLevel = "INFO" #DEBUG, INFO, WARN, ERROR, FATAL, PANIC
 defaultEntryPoints = ["http", "https"]
 
 [entryPoints]
@@ -8,27 +5,20 @@ defaultEntryPoints = ["http", "https"]
   address = ":80"
     [entryPoints.http.redirect]
     entryPoint = "https"
-
   [entryPoints.https]
   address = ":443"
-    [entryPoints.https.tls]
+  [entryPoints.https.tls]
 
-  [entryPoints.traefik]
-  address = ":8080"
+[docker]
+domain = "theomarty.fr"
+watch = true
+network = "web"
 
-[api]
-  dashboard = true
-  entryPoint = "traefik"
-
- # Let's encrypt configuration
 [acme]
 email = "contact@theomarty.fr"
-storage = "/etc/traefik/acme.json"
+storage = "acme.json"
+caServer = "https://acme-v01.api.letsencrypt.org/directory"
 entryPoint = "https"
-acmeLogging = true
-onDemand = false
 onHostRule = true
   [acme.httpChallenge]
   entryPoint = "http"
-
-[docker]
