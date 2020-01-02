@@ -18,7 +18,7 @@ services:
     image: phpmyadmin/phpmyadmin:4.8.5
     container_name: phpmyadmin
     labels:
-        - "traefik.frontend.rule=Host:theomarty.fr;PathPrefix:/db"
+        - "traefik.frontend.rule=Host:db.theomarty.fr"
     environment:
         MYSQL_ROOT_PASSWORD: supersecret
         PMA_HOST: mysql

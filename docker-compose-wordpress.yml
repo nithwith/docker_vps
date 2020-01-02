@@ -16,7 +16,7 @@ services:
       - ./config/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
       - ./wp-app:/var/www/html # Full wordpress project
     labels:
-      - "traefik.frontend.rule=Host:theomarty.fr;PathPrefix:/wordpress1"
+      - "traefik.frontend.rule=Host:theomarty.fr"
     networks:
         - web
     restart: always
