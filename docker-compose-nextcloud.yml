@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  nextcloud:
+      image: nextcloud
+      environment:
+        - MYSQL_DATABASE=nextcloud
+        - MYSQL_USER=$DB_USER
+        - MYSQL_PASSWORD=$DB_PASSWORD
+      links:
+        - mysql
+      restart: always
+      volumes:
+        - ./nextcloud:/var/www/html
+        - ./nextcloud/apps:/var/www/html/custom_apps
+        - ./nextcloud/data:/var/www/html/data
+        - ./nextcloud/config:/var/www/html/config
+
+      labels:
+        - "traefik.frontend.rule=Host:cloud.theomarty.fr"
+      networks:
+        - web
+      depends_on:
+        - mysql
