@@ -3,6 +3,7 @@ version: '3'
 services:
   nextcloud:
       image: nextcloud
+      container_name: nextcloud
       environment:
         - MYSQL_ROOT_PASSWORD=$DB_PASSWORD
         - MYSQL_PASSWORD=$DB_PASSWORD
