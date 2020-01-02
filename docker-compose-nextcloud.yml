@@ -4,9 +4,10 @@ services:
   nextcloud:
       image: nextcloud
       environment:
+        - MYSQL_ROOT_PASSWORD=$DB_PASSWORD
+        - MYSQL_PASSWORD=$DB_PASSWORD
         - MYSQL_DATABASE=nextcloud
         - MYSQL_USER=$DB_USER
-        - MYSQL_PASSWORD=$DB_PASSWORD
       links:
         - mysql
       restart: always
