@@ -1,6 +1,6 @@
 version: '3'
 services:
-  server:
+  ghost:
     image: ghost:alpine
     container_name: ghost
     restart: unless-stopped
