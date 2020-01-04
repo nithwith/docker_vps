@@ -1,0 +1,22 @@
+version: '3'
+services:
+  server:
+    image: ghost:alpine
+    container_name: ghost
+    restart: unless-stopped
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:theomarty.fr"
+      - "traefik.port=2368"
+      - "traefik.docker.network=web"
+    volumes:
+      - ./ghost/:/var/lib/ghost/content
+    environment:
+      - NODE_ENV=production
+      - url=https://theomarty.fr/
+
+networks:
+  web:
+    external: true
