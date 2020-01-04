@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: 
+    environment:
+        MYSQL_ROOT_PASSWORD: $DB_PASSWORD
+    labels:
+        - "traefik.enable=false"
+    volumes:
+        - data:/var/lib/mysql
+    networks:
+        - web
+    restart: always
+    
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.8.5
+    container_name: phpmyadmin
+    labels:
+        - "traefik.frontend.rule=Host:db.theomarty.fr"
+    environment:
+        MYSQL_ROOT_PASSWORD: supersecret
+        PMA_HOST: mysql
+    volumes:
+        - /sessions
+    networks:
+        - web
+    restart: always
+
+volumes:
+  data: 
+
+networks:
+  web:
+    external: true
+

@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  hugo:
+    container_name: hugo
+    image: jojomi/hugo:latest
+    volumes:
+      - ./hugo/hugo_blog/:/src/
+      - ./hugo/hugo_blog/:/output/
+    environment:
+      - HUGO_REFRESH_TIME=3600
+      - HUGO_BASEURL=theomarty.fr
+    networks:
+      - web
+networks:
+  web:
+    external: true

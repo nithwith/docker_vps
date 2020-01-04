@@ -1,0 +1,57 @@
+version: '3'
+
+
+wordpress:
+    image: wordpress
+    container_name: wordpress
+    restart: unless-stopped
+    depends_on:
+      - mariaDB
+    environment:
+     - WORDPRESS_DB_HOST=$DB_HOST
+     - WORDPRESS_DB_NAME=$DB_NAME
+     - WORDPRESS_TABLE_PREFIX=$DB_PREFIX
+     - WORDPRESS_DB_USER=$DB_USER
+     - WORDPRESS_DB_PASSWORD=$DB_PASSWORD
+    volumes:
+      - ./config/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+      - ./wp-app:/var/www/html # Full wordpress project
+    labels:
+      - "traefik.frontend.rule=Host:$WORDPRESS_DOMAIN"
+
+
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: supersecret
+    labels:
+        - "traefik.enable=false"
+    volumes:
+        - data:/var/lib/mysql
+    networks:
+        - web
+    restart: always
+    
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.8.5
+    container_name: phpmyadmin
+    labels:
+        - "traefik.frontend.rule=Host:theomarty.fr;PathPrefix:/db"
+    environment:
+        MYSQL_ROOT_PASSWORD: supersecret
+        PMA_HOST: mysql
+    volumes:
+        - /sessions
+    networks:
+        - web
+    restart: always
+
+volumes:
+  data: 
+
+networks:
+  web:
+    external: true
+

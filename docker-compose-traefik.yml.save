@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  traefik:
+    image: traefik:1.7
+    --docker --docker.domain=hakase-labs.io
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    labels:
+      - "traefik.frontend.rule=Host:$PROXY_DOMAIN"
+      - "traefik.port=8080"
+    restart: always
+    environment:
+      - LEXICON_SLEEP_TIME=60
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik/traefik.toml:/etc/traefik/traefik.toml
+      - ./traefik/acme.json:/etc/traefik/acme.json
+    container_name: traefik
+    restart: always
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
+

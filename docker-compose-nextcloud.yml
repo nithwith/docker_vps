@@ -4,6 +4,7 @@ services:
   nextcloud:
       image: nextcloud
       container_name: nextcloud
+      env_file: .env
       environment:
         - MYSQL_DATABASE=nextcloud
       restart: always
@@ -18,7 +19,6 @@ services:
         - web
       depends_on:
         - mysql
-        -
 networks:
   web:
     external: true
