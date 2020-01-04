@@ -3,11 +3,11 @@ version: '3'
 services:
   hugo:
     container_name: hugo
-    image: nithwith/hugo_blog
+    build: ./hugo
     labels:
       - "traefik.frontend.rule=Host:theomarty.fr"
     ports:
-      - "1313:1313"
+      - "1313:80"
     networks:
       - web
 networks:

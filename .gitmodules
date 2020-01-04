@@ -1,0 +1,3 @@
+[submodule "hugo"]
+	path = hugo
+	url = git@github.com:nithwith/hugo_blog.git
