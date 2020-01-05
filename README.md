@@ -1,7 +1,13 @@
 ## Getting started
-First you need docker, and that's pretty much it. Then just follow these steps:
+First you need docker, and that's pretty much it. 
 
-1. `docker network create web` Creates the web-network that we will use across docker containers.
-2. `docker-compose up -d`, this starts all containers.
+Configure a .env file for define :
 
-You can have all the sites you like, this should be no problem, just update the labels for docker.
+
+After just launch `bash start_all.sh` and it will launch al the services
+
+- traefik for reverse proxy
+- ghost for CMS
+- nextcloud for personnal cloud platform
+- portainer for docker management
+- phpmyadmin for db management

@@ -22,23 +22,6 @@ services:
     restart: always
     networks:
       - web
-  portainer:
-    image: portainer/portainer
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
-    labels:
-      - "traefik.frontend.rule=Host:portainer.theomarty.fr"
-      - "traefik.port=9000"
-      - "traefik.backend=portainer"
-      - "traefik.frontend.entryPoints=http,https"
-    container_name: portainer
-    networks:
-      - web
-volumes:
-  portainer_data:
-
 networks:
   web:
     external: true

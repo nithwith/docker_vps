@@ -6,7 +6,7 @@ services:
       container_name: nextcloud
       env_file: .env
       environment:
-        - MYSQL_DATABASE=nextcloud
+        - MYSQL_DATABASE=$NEXTCLOUD_DB
       restart: always
       volumes:
         - ./nextcloud:/var/www/html
@@ -14,7 +14,7 @@ services:
         - ./nextcloud/data:/var/www/html/data
         - ./nextcloud/config:/var/www/html/config
       labels:
-        - "traefik.frontend.rule=Host:cloud.theomarty.fr"
+        - "traefik.frontend.rule=Host:$NEXTCLOUD_DOMAIN"
       networks:
         - web
       depends_on:
