@@ -5,7 +5,7 @@ services:
     image: mysql:5.7
     container_name: mysql
     environment:
-        MYSQL_ROOT_PASSWORD: supersecret
+        MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
     labels:
         - "traefik.enable=false"
     volumes:
@@ -20,7 +20,7 @@ services:
     labels:
         - "traefik.frontend.rule=Host:db.theomarty.fr"
     environment:
-        MYSQL_ROOT_PASSWORD: supersecret
+        MYSQL_ROOT_PASSWORD: $MYSQL_PASSWORD
         PMA_HOST: mysql
     volumes:
         - /sessions
