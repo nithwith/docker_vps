@@ -14,4 +14,4 @@ docker-compose \
     -f docker-compose-db.yml \
 	-f docker-compose-nextcloud.yml \
 	-f docker-compose-ghost.yml \
-        up
+        up -d
