@@ -1,3 +1,240 @@
+## 2.0.0 - 2020-01-17
+### Fixed
+- Do not include index.php in the url of sharing links if url rewrite is enabled
+  [#1821](https://github.com/nextcloud/calendar/pull/1821)
+- Fix PHP warning when accessing public / embedded routes
+  [#1822](https://github.com/nextcloud/calendar/pull/1822)
+- Include index.php in router base if necessary despite url rewrite enabled
+  [#1823](https://github.com/nextcloud/calendar/pull/1823)
+
+## 2.0.0 RC1 - 2020-01-15
+### Fixed
+- Hide horizontal scrollbar in Firefox
+  [#1809](https://github.com/nextcloud/calendar/pull/1809)
+- Cannot enter minutes off slot
+  [#1756](https://github.com/nextcloud/calendar/issues/1756)
+- Fix downsizing calendar-grid when making window smaller
+  [#1806](https://github.com/nextcloud/calendar/pull/1806)
+- Always make all-day DTEND exclusive
+  [#1810](https://github.com/nextcloud/calendar/pull/1810)
+- Convert eventRenderer from event to property
+  [#1807](https://github.com/nextcloud/calendar/pull/1807)
+- Fix opening calendar when not logged in
+  [#1803](https://github.com/nextcloud/calendar/pull/1803)
+- Style of today indicator in agendaDay and agendaWeek
+  [#1804](https://github.com/nextcloud/calendar/issues/1804)
+- Fix double-escape of ampersand of settings title
+  [#1760](https://github.com/nextcloud/calendar/pull/1760)
+
+### Added
+- Editing event-time without punctuation
+  [#1621](https://github.com/nextcloud/calendar/issues/1621)
+- Allow entering incomplete time-values
+  [#1144](https://github.com/nextcloud/calendar/issues/1144)
+- Add reminder icon to events with an alarm
+  [#1197](https://github.com/nextcloud/calendar/issues/1197)
+- Free/Busy UI
+  [#1731](https://github.com/nextcloud/calendar/pull/1731)
+- Event-limit in calendar-grid
+  [#1800](https://github.com/nextcloud/calendar/pull/1800)
+- Add more illustration keywords
+  [#1780](https://github.com/nextcloud/calendar/pull/1780)
+- Create talk rooms from event editor
+  [#1732](https://github.com/nextcloud/calendar/pull/1732)
+-  Allow to provide defaults for user-settings
+  [#1787](https://github.com/nextcloud/calendar/issues/1787)
+
+## 2.0.0 beta3 - 2019-12-09
+### Fixed
+- Hide the resize handler of textareas, whenever we use autosize
+  [#1629](https://github.com/nextcloud/calendar/pull/1629)
+- Give the description field a default height of two rows
+  [#1630](https://github.com/nextcloud/calendar/pull/1630)
+- Hide calendar-picker if user has only one writable calendar
+  [#1631](https://github.com/nextcloud/calendar/pull/1631)
+- Do not show recurrence-summary, when the event is not repeating
+  [#1632](https://github.com/nextcloud/calendar/pull/1632)
+- Update timezone-database to 2019c
+  [#1635](https://github.com/nextcloud/calendar/pull/1635)
+- Replace with @babel/polyfill with core-js
+  [#1634](https://github.com/nextcloud/calendar/pull/1634)
+- Fix delay when toggling the all-day checkbox
+  [#1637](https://github.com/nextcloud/calendar/pull/1637)
+- Fixed missing translatable strings
+  [#1639](https://github.com/nextcloud/calendar/pull/1639)
+- Promise-related error in Firefox (catch is not a function)
+  [#1633](https://github.com/nextcloud/calendar/issues/1633)
+- Shared calendar entry to crowded in the navigation
+  [#1655](https://github.com/nextcloud/calendar/issues/1655)
+- Sharing published link via email doesn't work
+  [#1640](https://github.com/nextcloud/calendar/issues/1640)
+- Order All-day events by calendar 
+  [#760](https://github.com/nextcloud/calendar/issues/769)
+- Restructure menu for reminders
+  [#1638](https://github.com/nextcloud/calendar/pull/1638)
+- Do not show Empty message when clicking the search attendee multiselect
+  [#1699](https://github.com/nextcloud/calendar/pull/1699)
+- use FullCalendar navLinks
+  [#796](https://github.com/nextcloud/calendar/issues/796)
+- Replace New Reminder button with Multiselect to allow easier selection of alarm
+  [#1701](https://github.com/nextcloud/calendar/pull/1701)
+
+## 2.0.0 beta2 - 2019-11-04
+### Added
+- Consider categories for illustrations if title doesn't match any illustration
+  [#1509](https://github.com/nextcloud/calendar/issues/1509)
+- Update Today in calendar-view on day-change
+  [#678](https://github.com/nextcloud/calendar/issues/678)
+- Show warning when detected timezone is UTC
+  [#711](https://github.com/nextcloud/calendar/issues/711)
+- Allow to edit location and description in popover editor, if already set
+  [#680](https://github.com/nextcloud/calendar/issues/680)
+- Better default times when switching from all-day to timed event
+  [#532](https://github.com/nextcloud/calendar/issues/532)
+- Nicer integration of week-number into calendar-view
+  [#1571](https://github.com/nextcloud/calendar/issues/1571)
+- Simpler design for upper part of app navigation
+  [#1021](https://github.com/nextcloud/calendar/issues/1021)
+- Merged calendar-list and subscription list
+- Categories
+  [#107](https://github.com/nextcloud/calendar/issues/107)
+- Hide property info in read-only mode
+  [#1585](https://github.com/nextcloud/calendar/issues/1585)
+- Do not show all-day checkbox in read-only mode
+  [#1589](https://github.com/nextcloud/calendar/issues/1589)
+- Add timezone at creation of calendar
+  [#223](https://github.com/nextcloud/calendar/issues/223)
+- Allow to link to event
+  [#21](https://github.com/nextcloud/calendar/issues/21)
+
+### Fixed
+- Respect the user's locale
+  [#1569](https://github.com/nextcloud/calendar/issues/1569)
+- Mixup of locale and language
+  [#920](https://github.com/nextcloud/calendar/issues/920)
+- Error when selecting visibility in Editor
+  [#1591](https://github.com/nextcloud/calendar/issues/1591)
+- Show private calendars by default if no visibility is set
+  [#1588](https://github.com/nextcloud/calendar/issues/1588)
+- Remove title tag from illustration svg
+  [#1593](https://github.com/nextcloud/calendar/issues/1593)
+- Show more button in upper right corner in popover for read-only events
+  [#1592](https://github.com/nextcloud/calendar/issues/1592)
+- Event details are not transferred from popover to sidebar
+  [#1590](https://github.com/nextcloud/calendar/issues/1590)
+
+## 2.0.0 beta1 - 2019-10-21
+
+Version 2.0 of the calendar has been fully rewritten with a different technology, switching from the legacy AngularJS framework to Vue.js. Nextcloud is using more and more Vue.js throughout apps and server, which makes it easy to use common components everywhere. This allows faster development and a more coherent experience in all of Nextcloud.
+
+Even though all features present on the 1.x calendar app versions have been reimplemented, new bugs might have been introduced. Please report them if you find some.
+
+### Added
+- Improved compatibility with dark mode
+  [#1152](https://github.com/nextcloud/calendar/issues/1152)
+  [#985](https://github.com/nextcloud/calendar/issues/985)
+- Assign random UIDs on import if events don't have one
+  [#857](https://github.com/nextcloud/calendar/issues/857)
+- Use Popper.JS for more reliable positioning of event popover
+  [#18](https://github.com/nextcloud/calendar/issues/18)
+- New design for embedding shared calendars
+  [#741](https://github.com/nextcloud/calendar/issues/741)
+- Share multiple public calendars in one link
+  [#708](https://github.com/nextcloud/calendar/issues/708)
+- Completely rewritten interface for entering recurrence-rules
+  [#10](https://github.com/nextcloud/calendar/issues/10)
+- Improved discoverability of upper-left date-picker
+  [#881](https://github.com/nextcloud/calendar/issues/881)
+- Do not send invites on import
+  [#576](https://github.com/nextcloud/calendar/issues/576)
+- Automatically adjust the start time when user picks new end earlier than start
+  [#497](https://github.com/nextcloud/calendar/issues/497)
+- Prioritize user-addressbook over system users when inviting attendees
+  [#168](https://github.com/nextcloud/calendar/issues/168)
+- Add option to mark user as non-participant
+  [#570](https://github.com/nextcloud/calendar/issues/570)
+- Add subscribe and download button to public sharing menu
+  [#1263](https://github.com/nextcloud/calendar/issues/1263)
+- Make embedded public calendars stylable
+  [#318](https://github.com/nextcloud/calendar/issues/318)
+- Send email notifications on change of location, summary, or description
+  [#848](https://github.com/nextcloud/calendar/issues/848)
+- Add checkbox for birthday calendar in settings, allowing to restore it
+  [#277](https://github.com/nextcloud/calendar/issues/277)
+- Allow to edit only this or this and all future occurrences of an event
+  [#7](https://github.com/nextcloud/calendar/issues/7)
+- Add next/previous month button in top-left datepicker
+  [#554](https://github.com/nextcloud/calendar/issues/554)
+- Show invitation response of attendee
+  [#879](https://github.com/nextcloud/calendar/issues/879)
+- Top-left datepicker allows navigating between years
+  [#703](https://github.com/nextcloud/calendar/issues/703)
+- Limit number of concurrent requests while import
+  [#445](https://github.com/nextcloud/calendar/issues/445)
+- Cleanup VTimezones after editing events
+  [#37](https://github.com/nextcloud/calendar/issues/37)
+- Improved validation of attendee field
+  [#569](https://github.com/nextcloud/calendar/issues/560)
+- Show organizer of event
+  [#486](https://github.com/nextcloud/calendar/issues/486)
+- Improved legibility in read-only mode of editor
+  [#555](https://github.com/nextcloud/calendar/issues/555)
+- Allow to disable weekends
+  [#536](https://github.com/nextcloud/calendar/issues/536)
+- Add button to copy caldav link to clipboard
+  [#22](https://github.com/nextcloud/calendar/issues/22)
+- Show the current date in the browser title
+  [#280](https://github.com/nextcloud/calendar/issues/280)
+- Updated design of sharing mechanism for calendars
+  [#377](https://github.com/nextcloud/calendar/issues/377)
+- Ability to handle multiple VCALENDAR blocks in one ics
+  [#336](https://github.com/nextcloud/calendar/issues/336)
+- Allow to change color of contact birthdays calendar
+  [#313](https://github.com/nextcloud/calendar/issues/313)
+- Use webcals when accessing calendar via https
+  [#748](https://github.com/nextcloud/calendar/issues/748)
+- Use illustrations for events
+  [#968](https://github.com/nextcloud/calendar/issues/968)
+
+### Fixed
+- User session expiration exceptions
+  [#1215](https://github.com/nextcloud/calendar/issues/1215)
+- Files_sharing app is required as dependency for Sharing
+  [#608](https://github.com/nextcloud/calendar/issues/608)
+- Show original color of publicly shared calendars
+  [#619](https://github.com/nextcloud/calendar/issues/619)
+- Allow events with start time equal to end time
+  [#790](https://github.com/nextcloud/calendar/issues/790)
+- Missing interaction of import-button
+  [#1374](https://github.com/nextcloud/calendar/issues/1374)
+- Sharing list takes too long to show
+  [#1297](https://github.com/nextcloud/calendar/issues/1297)
+- Wrong profile picture when searching for user in share dialog
+  [#861](https://github.com/nextcloud/calendar/issues/861)
+- Properly update LAST-MODIFIED and SEQUENCE on update of calendar
+  [#976](https://github.com/nextcloud/calendar/issues/976)
+- Drag and Drop failed after viewing event details
+  [#914](https://github.com/nextcloud/calendar/issues/914)
+- Selected view was not sticky
+  [#809](https://github.com/nextcloud/calendar/issues/809)
+- Non-unique Id in HTML
+  [#860](https://github.com/nextcloud/calendar/issues/860)
+- X-NC-GROUP-ID was not properly removed 
+  [#342](https://github.com/nextcloud/calendar/issues/342)
+- Fields in repeat area are not disabled in read-only in Edge
+  [#420](https://github.com/nextcloud/calendar/issues/420)
+- Store CREATED, DTSTAMP, and LAST-MODIFIED as UTC
+  [#33](https://github.com/nextcloud/calendar/issues/33)
+- Same attendee could be added multiple times
+  [#575](https://github.com/nextcloud/calendar/issues/575)
+- Impossible to scroll down to save event on certain mobile devices
+  [#1079](https://github.com/nextcloud/calendar/issues/1079)
+
+### Changes
+- New calendars only support VEvent from now on
+  [#1316](https://github.com/nextcloud/calendar/issues/1316)
+
+
 ## 1.7.1 - 2019-09-05
 ### Fixed
 - Falses positives for local access rules [#1277](https://github.com/nextcloud/calendar/issues/1277)

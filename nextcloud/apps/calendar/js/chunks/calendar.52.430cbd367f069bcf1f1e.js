@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[52],{504:function(e,n,t){e.exports=function(){"use strict";return{code:"sk",week:{dow:1,doy:4},buttonText:{prev:"Predchádzajúci",next:"Nasledujúci",today:"Dnes",month:"Mesiac",week:"Týždeň",day:"Deň",list:"Rozvrh"},weekLabel:"Ty",allDayText:"Celý deň",eventLimitText:function(e){return"+ďalšie: "+e},noEventsMessage:"Žiadne akcie na zobrazenie"}}()}}]);
+//# sourceMappingURL=calendar.52.430cbd367f069bcf1f1e.js.map

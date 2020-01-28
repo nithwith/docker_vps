@@ -8,13 +8,14 @@
 
 * 🚀 **Integration with other Nextcloud apps!** Currently Contacts - more to come.
 * 🌐 **WebCal Support!** Want to see your favorite team’s matchdays in your calendar? No problem!
-* 🙋 **Attendees!** Invite people to your events.
-* 🙈 **We’re not reinventing the wheel!** Based on the great [davclient.js](https://github.com/evert/davclient.js), [ical.js](https://github.com/mozilla-comm/ical.js) and [fullcalendar](https://github.com/fullcalendar/fullcalendar) libraries.
+* 🙋 **Attendees!** Invite people to your events
+* ⌚️ **Free/Busy:** See when your attendees are available to meet
+* ⏰ **Reminders!** Get alarms for events inside your browser and via email.
+* 🙈 **We’re not reinventing the wheel!** Based on the great [c-dav library](https://github.com/nextcloud/cdav-library), [ical.js](https://github.com/mozilla-comm/ical.js) and [fullcalendar](https://github.com/fullcalendar/fullcalendar) libraries.
 	]]></description>
-	<version>1.7.1</version>
+	<version>2.0.0</version>
 	<licence>agpl</licence>
 	<author homepage="https://georg.coffee">Georg Ehrke</author>
-	<author homepage="http://raghunayyar.com">Raghu Nayyar</author>
 	<author homepage="https://tcit.fr">Thomas Citharel</author>
 	<namespace>Calendar</namespace>
 	<documentation>
@@ -31,6 +32,11 @@
 	<screenshot>https://raw.githubusercontent.com/nextcloud/calendar/master/screenshots/sidebar_attendees.png</screenshot>
 	<screenshot>https://raw.githubusercontent.com/nextcloud/calendar/master/screenshots/sidebar_reminders.png</screenshot>
 	<dependencies>
-		<nextcloud min-version="16" max-version="17" />
+		<nextcloud min-version="17" max-version="18" />
 	</dependencies>
+	<repair-steps>
+		<post-migration>
+			<step>OCA\Calendar\RepairSteps\CurrentViewNameRepairStep</step>
+		</post-migration>
+	</repair-steps>
 </info>

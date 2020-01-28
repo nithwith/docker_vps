@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[14],{466:function(e,t,n){e.exports=function(){"use strict";return{code:"el",week:{dow:1,doy:4},buttonText:{prev:"Προηγούμενος",next:"Επόμενος",today:"Σήμερα",month:"Μήνας",week:"Εβδομάδα",day:"Ημέρα",list:"Ατζέντα"},weekLabel:"Εβδ",allDayText:"Ολοήμερο",eventLimitText:"περισσότερα",noEventsMessage:"Δεν υπάρχουν γεγονότα για να εμφανιστεί"}}()}}]);
+//# sourceMappingURL=calendar.14.1c8be61548f75724eba9.js.map

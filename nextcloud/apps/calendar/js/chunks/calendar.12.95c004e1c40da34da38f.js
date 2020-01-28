@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[12],{464:function(e,n,t){e.exports=function(){"use strict";return{code:"da",week:{dow:1,doy:4},buttonText:{prev:"Forrige",next:"Næste",today:"I dag",month:"Måned",week:"Uge",day:"Dag",list:"Agenda"},weekLabel:"Uge",allDayText:"Hele dagen",eventLimitText:"flere",noEventsMessage:"Ingen arrangementer at vise"}}()}}]);
+//# sourceMappingURL=calendar.12.95c004e1c40da34da38f.js.map

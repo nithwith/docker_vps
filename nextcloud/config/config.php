@@ -36,4 +36,5 @@ $CONFIG = array (
   'dbuser' => 'oc_nithwith',
   'dbpassword' => 'laqdQzpl7PF/QEs3BDSxjKeHpzpK3e',
   'installed' => true,
+  'maintenance' => false,
 );
