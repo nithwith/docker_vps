@@ -6,8 +6,9 @@
  * @author Arthur Schiwon <blizzz@arthur-schiwon.de>
  * @author Bernhard Posselt <dev@bernhard-posselt.com>
  * @author Bjoern Schiessle <bjoern@schiessle.org>
- * @author Christoph Wurst <christoph@owncloud.com>
+ * @author Christoph Wurst <christoph@winzerhof-wurst.at>
  * @author Felix Rupp <github@felixrupp.com>
+ * @author Greta Doci <gretadoci@gmail.com>
  * @author Joas Schilling <coding@schilljs.com>
  * @author Jörn Friedrich Dreyer <jfd@butonic.de>
  * @author Lukas Reschke <lukas@statuscode.ch>
@@ -31,7 +32,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
 
@@ -61,6 +62,7 @@ use OCP\IUserSession;
 use OCP\Lockdown\ILockdownManager;
 use OCP\Security\ISecureRandom;
 use OCP\Session\Exceptions\SessionNotAvailableException;
+use OCP\User\Events\PostLoginEvent;
 use OCP\Util;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
@@ -315,6 +317,29 @@ class Session implements IUserSession, Emitter {
 	}
 
 	/**
+	 * @return mixed
+	 */
+	public function getImpersonatingUserID(): ?string {
+
+		return $this->session->get('oldUserId');
+
+	}
+
+	public function setImpersonatingUserID(bool $useCurrentUser = true): void {
+		if ($useCurrentUser === false) {
+			$this->session->remove('oldUserId');
+			return;
+		}
+
+		$currentUser = $this->getUser();
+
+		if ($currentUser === null) {
+			throw new \OC\User\NoUserException();
+		}
+		$this->session->set('oldUserId', $currentUser->getUID());
+
+	}
+	/**
 	 * set the token id
 	 *
 	 * @param int|null $token that was used to log in
@@ -375,13 +400,11 @@ class Session implements IUserSession, Emitter {
 			$firstTimeLogin = $user->updateLastLoginTimestamp();
 		}
 
-		$postLoginEvent = new OC\User\Events\PostLoginEvent(
+		$this->dispatcher->dispatchTyped(new PostLoginEvent(
 			$user,
 			$loginDetails['password'],
 			$isToken
-		);
-		$this->dispatcher->dispatch(OC\User\Events\PostLoginEvent::class, $postLoginEvent);
-
+		));
 		$this->manager->emit('\OC\User', 'postLogin', [
 			$user,
 			$loginDetails['password'],
@@ -838,7 +861,7 @@ class Session implements IUserSession, Emitter {
 
 		try {
 			$sessionId = $this->session->getId();
-			$this->tokenProvider->renewSessionToken($oldSessionId, $sessionId);
+			$token = $this->tokenProvider->renewSessionToken($oldSessionId, $sessionId);
 		} catch (SessionNotAvailableException $ex) {
 			return false;
 		} catch (InvalidTokenException $ex) {
@@ -847,7 +870,6 @@ class Session implements IUserSession, Emitter {
 		}
 
 		$this->setMagicInCookie($user->getUID(), $newToken);
-		$token = $this->tokenProvider->getToken($sessionId);
 
 		//login
 		$this->setUser($user);
@@ -878,9 +900,9 @@ class Session implements IUserSession, Emitter {
 	 * logout the user from the session
 	 */
 	public function logout() {
-		$this->manager->emit('\OC\User', 'logout');
 		$user = $this->getUser();
-		if (!is_null($user)) {
+		$this->manager->emit('\OC\User', 'logout', [$user]);
+		if ($user !== null) {
 			try {
 				$this->tokenProvider->invalidateToken($this->session->getId());
 			} catch (SessionNotAvailableException $ex) {
@@ -892,7 +914,7 @@ class Session implements IUserSession, Emitter {
 		$this->setToken(null);
 		$this->unsetMagicInCookie();
 		$this->session->clear();
-		$this->manager->emit('\OC\User', 'postLogout');
+		$this->manager->emit('\OC\User', 'postLogout', [$user]);
 	}
 
 	/**

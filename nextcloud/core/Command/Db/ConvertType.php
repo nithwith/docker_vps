@@ -6,6 +6,7 @@
  * @author Bart Visscher <bartv@thisnet.nl>
  * @author Joas Schilling <coding@schilljs.com>
  * @author Lukas Reschke <lukas@statuscode.ch>
+ * @author Łukasz Buśko <busko.lukasz@pm.me>
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Roeland Jago Douma <roeland@famdouma.nl>
  * @author Sander Ruitenbeek <sander@grids.be>
@@ -24,7 +25,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
 
@@ -33,11 +34,11 @@ namespace OC\Core\Command\Db;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Types\Type;
-use OC\DB\MigrationService;
-use OCP\DB\QueryBuilder\IQueryBuilder;
-use \OCP\IConfig;
 use OC\DB\Connection;
 use OC\DB\ConnectionFactory;
+use OC\DB\MigrationService;
+use OCP\DB\QueryBuilder\IQueryBuilder;
+use OCP\IConfig;
 use Stecman\Component\Symfony\Console\BashCompletion\Completion\CompletionAwareInterface;
 use Stecman\Component\Symfony\Console\BashCompletion\CompletionContext;
 use Symfony\Component\Console\Command\Command;
@@ -211,9 +212,11 @@ class ConvertType extends Command implements CompletionAwareInterface {
 				$output->writeln('<comment>can be included by specifying the --all-apps option.</comment>');
 			}
 
+			$continueConversion = !$input->isInteractive(); // assume yes for --no-interaction and no otherwise.
+			$question = new ConfirmationQuestion('Continue with the conversion (y/n)? [n] ', $continueConversion);
+
 			/** @var QuestionHelper $helper */
 			$helper = $this->getHelper('question');
-			$question = new ConfirmationQuestion('Continue with the conversion (y/n)? [n] ', false);
 
 			if (!$helper->ask($input, $output, $question)) {
 				return;

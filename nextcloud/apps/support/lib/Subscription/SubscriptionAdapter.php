@@ -81,9 +81,12 @@ class SubscriptionAdapter implements ISubscription, ISupportedApps {
 		$hasValidOnlyOfficeSubscription = $this->subscriptionNotExpired($subscriptionInfo['onlyoffice']['endDate'] ?? 'now');
 
 		$filesSubscription = [
+			'accessibility',
 			'activity',
 			'admin_audit',
+			'circles',
 			'comments',
+			'data_request',
 			'dav',
 			'encryption',
 			'external',
@@ -94,15 +97,18 @@ class SubscriptionAdapter implements ISubscription, ISupportedApps {
 			'files_antivirus',
 			'files_automatedtagging',
 			'files_external',
+			'files_fulltextsearch',
+			'files_fulltextsearch_tesseract',
 			'files_pdfviewer',
+			'files_retention',
 			'files_sharing',
-			'files_texteditor',
 			'files_trashbin',
 			'files_versions',
 			'files_videoplayer',
 			'firstrunwizard',
+			'fulltextsearch',
+			'fulltextsearch_elasticsearch',
 			'gallery',
-			'guests',
 			'logreader',
 			'lookup_server_connector',
 			'nextcloud_announcements',
@@ -118,29 +124,32 @@ class SubscriptionAdapter implements ISubscription, ISupportedApps {
 			'socialsharing_twitter',
 			'support',
 			'systemtags',
-			'terms_of_service',
+			'text',
 			'theming',
-			'twofactor_totp',
-			'twofactor_u2f',
 			'updatenotification',
 			'user_ldap',
 			'user_saml',
+			'viewer',
 			'workflowengine',
 		];
 
 		$nextcloudVersion = \OCP\Util::getVersion()[0];
 
-		if ($nextcloudVersion >= 15) {
-			$filesSubscription[] = 'groupfolders';
-		}
 		if ($nextcloudVersion >= 16) {
-			$filesSubscription[] = 'circles';
-		}
-		if ($nextcloudVersion >= 17) {
 			$filesSubscription[] = 'files_rightclick';
+			$filesSubscription[] = 'groupfolders';
+			$filesSubscription[] = 'guests';
 			$filesSubscription[] = 'privacy';
 			$filesSubscription[] = 'recommendations';
-			$filesSubscription[] = 'viewer';
+			$filesSubscription[] = 'terms_of_service';
+			$filesSubscription[] = 'text';
+		}
+		if ($nextcloudVersion >= 17) {
+			$filesSubscription[] = 'twofactor_totp';
+			$filesSubscription[] = 'twofactor_u2f';
+		}
+		if ($nextcloudVersion  < 17) {
+			$filesSubscription[] = 'files_texteditor';
 		}
 
 		$supportedApps = [];
@@ -151,6 +160,8 @@ class SubscriptionAdapter implements ISubscription, ISupportedApps {
 		if ($hasValidGroupwareSubscription) {
 			$supportedApps[] = 'calendar';
 			$supportedApps[] = 'contacts';
+			$supportedApps[] = 'deck';
+			$supportedApps[] = 'mail';
 		}
 		if ($hasValidTalkSubscription) {
 			$supportedApps[] = 'talk';

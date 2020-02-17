@@ -5,7 +5,8 @@
  * @author Arthur Schiwon <blizzz@arthur-schiwon.de>
  * @author Bernhard Posselt <dev@bernhard-posselt.com>
  * @author Bjoern Schiessle <bjoern@schiessle.org>
- * @author Christoph Wurst <christoph@owncloud.com>
+ * @author Christoph Wurst <christoph@winzerhof-wurst.at>
+ * @author Daniel Kesselberg <mail@danielkesselberg.de>
  * @author Joas Schilling <coding@schilljs.com>
  * @author Jörn Friedrich Dreyer <jfd@butonic.de>
  * @author Lukas Reschke <lukas@statuscode.ch>
@@ -28,10 +29,9 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
-
 
 namespace OC\AppFramework\DependencyInjection;
 
@@ -40,14 +40,15 @@ use OC\AppFramework\Http;
 use OC\AppFramework\Http\Dispatcher;
 use OC\AppFramework\Http\Output;
 use OC\AppFramework\Middleware\MiddlewareDispatcher;
-use OC\AppFramework\Middleware\Security\CORSMiddleware;
 use OC\AppFramework\Middleware\OCSMiddleware;
+use OC\AppFramework\Middleware\Security\CORSMiddleware;
 use OC\AppFramework\Middleware\Security\RateLimitingMiddleware;
 use OC\AppFramework\Middleware\Security\SecurityMiddleware;
 use OC\AppFramework\Middleware\SessionMiddleware;
 use OC\AppFramework\Utility\SimpleContainer;
 use OC\Core\Middleware\TwoFactorMiddleware;
 use OC\ServerContainer;
+use OCA\WorkflowEngine\Manager;
 use OCP\AppFramework\Http\IOutput;
 use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\QueryException;
@@ -65,7 +66,6 @@ use OCP\IServerContainer;
 use OCP\ISession;
 use OCP\IURLGenerator;
 use OCP\IUserSession;
-use OCA\WorkflowEngine\Manager;
 
 class DIContainer extends SimpleContainer implements IAppContainer {
 
@@ -279,7 +279,7 @@ class DIContainer extends SimpleContainer implements IAppContainer {
 			);
 
 			foreach($this->middleWares as $middleWare) {
-				$dispatcher->registerMiddleware($c[$middleWare]);
+				$dispatcher->registerMiddleware($c->query($middleWare));
 			}
 
 			$dispatcher->registerMiddleware(
@@ -291,6 +291,7 @@ class DIContainer extends SimpleContainer implements IAppContainer {
 			return $dispatcher;
 		});
 
+		$this->registerAlias(\OCP\Collaboration\Resources\IProviderManager::class, OC\Collaboration\Resources\ProviderManager::class);
 		$this->registerAlias(\OCP\Collaboration\Resources\IManager::class, OC\Collaboration\Resources\Manager::class);
 	}
 

@@ -1,6 +1,7 @@
 <?php
 /**
  * @author Joas Schilling <coding@schilljs.com>
+ * @author John Molakvoæ <skjnldsv@protonmail.com>
  *
  * @license GNU AGPL version 3 or any later version
  *
@@ -19,5 +20,4 @@
  *
  */
 
-$app = new \OCA\Activity\AppInfo\Application();
-$app->register();
+\OC::$server->query(\OCA\Activity\AppInfo\Application::class);

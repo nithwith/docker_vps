@@ -9,20 +9,24 @@
  * @author Bernhard Posselt <dev@bernhard-posselt.com>
  * @author Bjoern Schiessle <bjoern@schiessle.org>
  * @author Björn Schießle <bjoern@schiessle.org>
- * @author Christoph Wurst <christoph@owncloud.com>
+ * @author Christoph Wurst <christoph@winzerhof-wurst.at>
  * @author Damjan Georgievski <gdamjan@gmail.com>
  * @author davidgumberg <davidnoizgumberg@gmail.com>
+ * @author Eric Masseran <rico.masseran@gmail.com>
  * @author Florin Peter <github@florin-peter.de>
- * @author Individual IT Services <info@individual-it.net>
+ * @author Greta Doci <gretadoci@gmail.com>
  * @author Jakob Sack <mail@jakobsack.de>
+ * @author jaltek <jaltek@mailbox.org>
  * @author Jan-Christoph Borchardt <hey@jancborchardt.net>
  * @author Joachim Sokolowski <github@sokolowski.org>
  * @author Joas Schilling <coding@schilljs.com>
  * @author John Molakvoæ (skjnldsv) <skjnldsv@protonmail.com>
- * @author Juan Pablo Villafáñez <jvillafanez@solidgear.es>
  * @author Jörn Friedrich Dreyer <jfd@butonic.de>
+ * @author Juan Pablo Villafáñez <jvillafanez@solidgear.es>
+ * @author Julius Härtl <jus@bitgrid.net>
  * @author Ko- <k.stoffelen@cs.ru.nl>
  * @author Lukas Reschke <lukas@statuscode.ch>
+ * @author MartB <mart.b@outlook.de>
  * @author Michael Gapczynski <GapczynskiM@gmail.com>
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Owen Winkler <a_github@midnightcircus.com>
@@ -35,6 +39,7 @@
  * @author Stefan Weil <sw@weilnetz.de>
  * @author Thomas Müller <thomas.mueller@tmit.eu>
  * @author Thomas Tanghus <thomas@tanghus.net>
+ * @author Tobia De Koninck <tobia@ledfan.be>
  * @author Vincent Petry <pvince81@owncloud.com>
  * @author Volkan Gezer <volkangezer@gmail.com>
  *
@@ -50,7 +55,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
 
@@ -652,30 +657,35 @@ class OC {
 		if (!defined('OC_CONSOLE')) {
 			$errors = OC_Util::checkServer(\OC::$server->getSystemConfig());
 			if (count($errors) > 0) {
-				if (self::$CLI) {
-					// Convert l10n string into regular string for usage in database
-					$staticErrors = [];
-					foreach ($errors as $error) {
-						echo $error['error'] . "\n";
-						echo $error['hint'] . "\n\n";
-						$staticErrors[] = [
-							'error' => (string)$error['error'],
-							'hint' => (string)$error['hint'],
-						];
-					}
-
-					try {
-						\OC::$server->getConfig()->setAppValue('core', 'cronErrors', json_encode($staticErrors));
-					} catch (\Exception $e) {
-						echo('Writing to database failed');
-					}
-					exit(1);
-				} else {
+				if (!self::$CLI) {
 					http_response_code(503);
 					OC_Util::addStyle('guest');
-					OC_Template::printGuestPage('', 'error', array('errors' => $errors));
-					exit;
+					try {
+						OC_Template::printGuestPage('', 'error', array('errors' => $errors));
+						exit;
+					} catch (\Exception $e) {
+						// In case any error happens when showing the error page, we simply fall back to posting the text.
+						// This might be the case when e.g. the data directory is broken and we can not load/write SCSS to/from it.
+					}
 				}
+
+				// Convert l10n string into regular string for usage in database
+				$staticErrors = [];
+				foreach ($errors as $error) {
+					echo $error['error'] . "\n";
+					echo $error['hint'] . "\n\n";
+					$staticErrors[] = [
+						'error' => (string)$error['error'],
+						'hint' => (string)$error['hint'],
+					];
+				}
+
+				try {
+					\OC::$server->getConfig()->setAppValue('core', 'cronErrors', json_encode($staticErrors));
+				} catch (\Exception $e) {
+					echo('Writing to database failed');
+				}
+				exit(1);
 			} elseif (self::$CLI && \OC::$server->getConfig()->getSystemValue('installed', false)) {
 				\OC::$server->getConfig()->deleteAppValue('core', 'cronErrors');
 			}
@@ -721,7 +731,8 @@ class OC {
 
 		// Make sure that the application class is not loaded before the database is setup
 		if ($systemConfig->getValue("installed", false)) {
-			$settings = new \OC\Settings\Application();
+			OC_App::loadApp('settings');
+			$settings = \OC::$server->query(\OCA\Settings\AppInfo\Application::class);
 			$settings->register();
 		}
 

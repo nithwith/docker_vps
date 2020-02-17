@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[61],{512:function(n,e,t){n.exports=function(){"use strict";return{code:"vi",week:{dow:1,doy:4},buttonText:{prev:"Trước",next:"Tiếp",today:"Hôm nay",month:"Tháng",week:"Tuần",day:"Ngày",list:"Lịch biểu"},weekLabel:"Tu",allDayText:"Cả ngày",eventLimitText:function(n){return"+ thêm "+n},noEventsMessage:"Không có sự kiện để hiển thị"}}()}}]);
+//# sourceMappingURL=calendar.61.80a91243397f841e3634.js.map

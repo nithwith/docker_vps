@@ -11,11 +11,8 @@
     "You created two-factor backup codes for your account" : "Създадохте резервен код за двустепенното удостоверяване за вашия профил",
     "Second-factor backup codes" : "Резервен код за втората стъпка",
     "Backup code" : "Резервен код",
-    "activated" : "активиран",
-    "deactivated" : "деактивиран",
-    "created" : "създаден",
-    "destroyed" : "унищожен",
-    "Nextcloud backup codes" : "Nextcloud резервни кодове",
+    "Use backup code" : "Използвай код за възстановяване",
+    "Submit" : "Изпращане",
     "You have enabled two-factor authentication but have not yet generated backup codes. Be sure to do this in case you lose access to your second factor." : "Включили сте двустепенното удостоверяването, но не сте създали резервен код. Моля, създайте резервен код, който да ползвате когато загубите достъп до устройството генериращо кода за втората стъпка в удостоверяването."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

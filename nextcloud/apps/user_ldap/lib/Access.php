@@ -10,18 +10,22 @@
  * @author Benjamin Diele <benjamin@diele.be>
  * @author bline <scottbeck@gmail.com>
  * @author Christopher Schäpers <kondou@ts.unde.re>
+ * @author Daniel Kesselberg <mail@danielkesselberg.de>
  * @author Joas Schilling <coding@schilljs.com>
- * @author Juan Pablo Villafáñez <jvillafanez@solidgear.es>
  * @author Jörn Friedrich Dreyer <jfd@butonic.de>
+ * @author Juan Pablo Villafáñez <jvillafanez@solidgear.es>
  * @author Lorenzo M. Catucci <lorenzo@sancho.ccd.uniroma2.it>
  * @author Lukas Reschke <lukas@statuscode.ch>
- * @author Lyonel Vincent <lyonel@ezix.org>
  * @author Mario Kolling <mario.kolling@serpro.gov.br>
+ * @author Max Kovalenko <mxss1998@yandex.ru>
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Nicolas Grekas <nicolas.grekas@gmail.com>
+ * @author Peter Kubica <peter@kubica.ch>
  * @author Ralph Krimmel <rkrimme1@gwdg.de>
  * @author Robin McCorkell <robin@mccorkell.me.uk>
+ * @author Roeland Jago Douma <roeland@famdouma.nl>
  * @author Roger Szabo <roger.szabo@web.de>
+ * @author Roland Tapken <roland@bitarbeiter.net>
  * @author root <root@localhost.localdomain>
  * @author Victor Dubiniuk <dubiniuk@owncloud.com>
  *
@@ -37,7 +41,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
 
@@ -45,11 +49,11 @@ namespace OCA\User_LDAP;
 
 use OC\HintException;
 use OC\Hooks\PublicEmitter;
+use OC\ServerNotAvailableException;
 use OCA\User_LDAP\Exceptions\ConstraintViolationException;
+use OCA\User_LDAP\Mapping\AbstractMapping;
 use OCA\User_LDAP\User\Manager;
 use OCA\User_LDAP\User\OfflineUser;
-use OCA\User_LDAP\Mapping\AbstractMapping;
-use OC\ServerNotAvailableException;
 use OCP\IConfig;
 use OCP\ILogger;
 use OCP\IUserManager;
@@ -345,7 +349,7 @@ class Access extends LDAPUtility {
 		}
 		return [];
 	}
-	
+
 	/**
 	 * Set password for an LDAP user identified by a DN
 	 *
@@ -652,6 +656,8 @@ class Access extends LDAPUtility {
 			if ($this->ncUserManager instanceof PublicEmitter && $isUser) {
 				$this->cacheUserExists($name);
 				$this->ncUserManager->emit('\OC\User', 'assignedUserId', [$name]);
+			} elseif (!$isUser) {
+				$this->cacheGroupExists($name);
 			}
 			return true;
 		}
@@ -759,6 +765,13 @@ class Access extends LDAPUtility {
 	 */
 	public function cacheUserExists($ocName) {
 		$this->connection->writeToCache('userExists'.$ocName, true);
+	}
+
+	/**
+	 * caches a group as existing
+	 */
+	public function cacheGroupExists(string $gid): void {
+		$this->connection->writeToCache('groupExists'.$gid, true);
 	}
 
 	/**
@@ -958,7 +971,15 @@ class Access extends LDAPUtility {
 	 * @return array
 	 */
 	public function fetchListOfGroups($filter, $attr, $limit = null, $offset = null) {
-		return $this->fetchList($this->searchGroups($filter, $attr, $limit, $offset), $this->manyAttributes($attr));
+		$groupRecords = $this->searchGroups($filter, $attr, $limit, $offset);
+		array_walk($groupRecords, function($record) {
+			$newlyMapped = false;
+			$gid = $this->dn2ocname($record['dn'][0], null, false, $newlyMapped, $record);
+			if(!$newlyMapped && is_string($gid)) {
+				$this->cacheGroupExists($gid);
+			}
+		});
+		return $this->fetchList($groupRecords, $this->manyAttributes($attr));
 	}
 
 	/**

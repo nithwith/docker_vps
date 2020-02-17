@@ -1,30 +1,35 @@
 <?php
+
 declare(strict_types=1);
+
 /**
  * @copyright Copyright (c) 2019, Thomas Citharel
  * @copyright Copyright (c) 2019, Georg Ehrke
  *
- * @author Thomas Citharel <tcit@tcit.fr>
  * @author Georg Ehrke <oc.list@georgehrke.com>
+ * @author Roeland Jago Douma <roeland@famdouma.nl>
+ * @author Thomas Citharel <tcit@tcit.fr>
  *
- * @license AGPL-3.0
+ * @license GNU AGPL version 3 or any later version
  *
- * This code is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\DAV\CalDAV\Reminder;
 
-use \DateTimeImmutable;
+use DateTimeImmutable;
 use OCA\DAV\CalDAV\CalDavBackend;
 use OCP\AppFramework\Utility\ITimeFactory;
 use OCP\IGroup;
@@ -107,7 +112,11 @@ class ReminderService {
 		$reminders = $this->backend->getRemindersToProcess();
 
 		foreach($reminders as $reminder) {
-			$vcalendar = $this->parseCalendarData($reminder['calendardata']);
+			$calendarData = is_resource($reminder['calendardata'])
+				? stream_get_contents($reminder['calendardata'])
+				: $reminder['calendardata'];
+
+			$vcalendar = $this->parseCalendarData($calendarData);
 			if (!$vcalendar) {
 				$this->backend->removeReminder($reminder['id']);
 				continue;
@@ -176,8 +185,12 @@ class ReminderService {
 	 * @param array $objectData
 	 */
 	private function onCalendarObjectCreate(array $objectData):void {
+		$calendarData = is_resource($objectData['calendardata'])
+			? stream_get_contents($objectData['calendardata'])
+			: $objectData['calendardata'];
+
 		/** @var VObject\Component\VCalendar $vcalendar */
-		$vcalendar = $this->parseCalendarData($objectData['calendardata']);
+		$vcalendar = $this->parseCalendarData($calendarData);
 		if (!$vcalendar) {
 			return;
 		}

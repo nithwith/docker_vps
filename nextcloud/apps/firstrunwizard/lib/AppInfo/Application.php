@@ -23,12 +23,16 @@
 
 namespace OCA\FirstRunWizard\AppInfo;
 
+use OCA\Files\Event\LoadAdditionalScriptsEvent;
 use OCA\FirstRunWizard\Notification\AppHint;
 use OCA\FirstRunWizard\Notification\Notifier;
 use OCP\AppFramework\App;
 use OCP\AppFramework\Http\TemplateResponse;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IConfig;
+use OCP\IInitialStateService;
 use OCP\IL10N;
+use OCP\IServerContainer;
 use OCP\IUser;
 use OCP\IUserSession;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -51,15 +55,17 @@ class Application extends App {
 	}
 
 	protected function registerScripts() {
-		/** @var EventDispatcherInterface $dispatcher */
-		$dispatcher = $this->getContainer()->getServer()->getEventDispatcher();
+		/** @var IServerContainer $server */
+		$server = $this->getContainer()->getServer();
+		/** @var IEventDispatcher $dispatcher */
+		$dispatcher = $server->query(IEventDispatcher::class);
 
 		$dispatcher->addListener(TemplateResponse::EVENT_LOAD_ADDITIONAL_SCRIPTS_LOGGEDIN, function() {
 			\OC_Util::addScript('firstrunwizard', 'about');
 		});
 
 		// Display the first run wizard only on the files app,
-		$dispatcher->addListener('OCA\Files::loadAdditionalScripts', function() {
+		$dispatcher->addListener(LoadAdditionalScriptsEvent::class, function() use ($server) {
 			/** @var IUserSession $userSession */
 			$userSession = $this->getContainer()->query(IUserSession::class);
 			$user = $userSession->getUser();

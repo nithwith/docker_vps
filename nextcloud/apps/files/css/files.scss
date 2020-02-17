@@ -1,6 +1,10 @@
-/* Copyright (c) 2011, Jan-Christoph Borchardt, http://jancborchardt.net
- This file is licensed under the Affero General Public License version 3 or later.
- See the COPYING-README file. */
+/**
+ * Copyright (c) 2011, Jan-Christoph Borchardt, http://jancborchardt.net
+ * @copyright Copyright (c) 2019, Fabian Dreßler <nudelsalat@clouz.de>
+ *
+ * This file is licensed under the Affero General Public License version 3 or later.
+ * See the COPYING-README file.
+ */
 
 /* SETTINGS */
 #files-setting-showhidden {
@@ -61,32 +65,28 @@
 	#emptycontent:not(.hidden) ~ & {
 		display: none;
 	}
+	// floating header
+	thead {
+		position: -webkit-sticky;
+		position: sticky;
+		@include position('sticky');
+		// header + breadcrumbs
+		top: $header-height;
+		// under breadcrumbs, over file list
+		z-index: 60;
+		display: block;
+		background-color: var(--color-main-background-translucent);
+	}
 }
 
 #filestable.hidden {
 	display: none;
 }
 
-@media only screen and (min-width: $breakpoint-mobile + 1) {
-	#filestable {
-		// floating header
-		thead {
-			position: -webkit-sticky;
-			position: sticky;
-			// header + breadcrumbs
-			top: $header-height;
-			padding-top: 40px;
-			// under breadcrumbs, over file list
-			z-index: 55;
-			display: block;
-			background-color: var(--color-main-background-translucent);
-		}
-	}
-}
-
 /* fit app list view heights */
-.app-files #app-content>.viewcontainer {
+.app-files #app-content > .viewcontainer {
 	min-height: 0%;
+	width: 100%;
 }
 
 .app-files #app-content {
@@ -125,6 +125,7 @@
 }
 .nav-icon-sharingin,
 .nav-icon-sharingout,
+.nav-icon-pendingshares,
 .nav-icon-shareoverview {
 	@include icon-color('share', 'files', $color-black);
 }
@@ -284,14 +285,8 @@ table th.column-last, table td.column-last {
 	max-width: 130px;
 }
 
-/* Multiselect bar */
-table.multiselect thead {
-	@include position('sticky');
+#app-content-files thead {
 	top: 94px;
-	z-index: 55;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	left: $navigation-width;
 }
 
 table.multiselect thead th {
@@ -655,6 +650,9 @@ a.action > img {
 	/* add whitespace to bottom of files list to correctly show dropdowns */
 	height: 250px;
 }
+#filestable .filesummary {
+	width: 100%;
+}
 /* Less whitespace needed on link share page
  * as there is a footer and action menus have fewer entries.
  */
@@ -778,6 +776,11 @@ table.dragshadow td.size {
 	}
 }
 
+.notCreatable {
+	padding-left: 12px;
+	padding-top: 12px;
+	color: var(--color-text-lighter);
+}
 
 #quota {
 	margin: 0 !important;

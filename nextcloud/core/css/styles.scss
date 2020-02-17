@@ -87,8 +87,10 @@ ul {
 
 body {
 	background-color: var(--color-main-background);
+	background-color: linear-gradient(40deg, var(--color-main-background) 0%, rgba(28,175,255,1) 100%);
 	font-weight: normal;
-	font-size: .8em;
+	/* bring the default font size up to 14px */
+	font-size: .875em;
 	line-height: 1.6em;
 	font-family: var(--font-face);
 	color: var(--color-main-text);
@@ -180,7 +182,7 @@ body {
 	padding: 0;
 	margin: 0;
 	background-color: var(--color-main-background-translucent);
-	z-index: 60;
+	z-index: 61; /* must be above the filelist sticky header */
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
@@ -405,7 +407,7 @@ body {
 .avatar, .avatardiv {
 	border-radius: 50%;
 	flex-shrink: 0;
-	img {
+	&> img {
 		border-radius: 50%;
 		flex-shrink: 0;
 	}
@@ -895,6 +897,9 @@ code {
 					white-space: pre;
 					text-overflow: ellipsis;
 				}
+				&__last {
+					white-space: pre;
+				}
 			}
 		}
 		.filesize, .date {
@@ -985,16 +990,12 @@ span.ui-icon {
 	}
 }
 
-#contactsmenu > .menu {
-	/* show ~4.5 entries */
-	height: 278px;
+#header .header-right > div#contactsmenu > .menu {
+	/* show 2.5 to 4.5 entries depending on the screen height */
+	height: calc(100vh - 50px * 3);
+	max-height: calc(50px * 4.5 + 50px);
+	min-height: calc(50px * 3.5);
 	width: 350px;
-	max-width: 90%;
-	right: 13px;
-
-	&::after {
-		right: 61px;
-	}
 
 	.emptycontent {
 		margin-top: 5vh !important;
@@ -1006,8 +1007,10 @@ span.ui-icon {
 	}
 
 	.content {
-		max-height: calc(100% - #{$header-height});
-		height: 100%;
+		/* fixed max height of the parent container without the search input */
+		height: calc(100vh - 50px * 3 - 50px);
+		max-height: calc(50px * 4.5);
+		min-height: calc(50px * 3.5 - 50px);
 		overflow-y: auto;
 
 		.footer {
@@ -1196,7 +1199,8 @@ div.crumb {
 		// Some sane max-width for each folder name
 		max-width: 200px;
 
-		&.icon-home {
+		&.icon-home,
+		&.icon-delete {
 			// Hide home text
 			text-indent: -9999px;
 		}

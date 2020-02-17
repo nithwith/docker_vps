@@ -3,12 +3,15 @@
  * @copyright Copyright (c) 2016 Arthur Schiwon <blizzz@arthur-schiwon.de>
  *
  * @author Arthur Schiwon <blizzz@arthur-schiwon.de>
+ * @author Christoph Wurst <christoph@winzerhof-wurst.at>
  * @author Joas Schilling <coding@schilljs.com>
+ * @author John Molakvoæ (skjnldsv) <skjnldsv@protonmail.com>
+ * @author Julius Härtl <jus@bitgrid.net>
  * @author Lukas Reschke <lukas@statuscode.ch>
- * @author Marius Blüm <marius@lineone.io>
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Robin Appelman <robin@icewind.nl>
  * @author Roeland Jago Douma <roeland@famdouma.nl>
+ * @author sualko <klaus@jsxc.org>
  *
  * @license GNU AGPL version 3 or any later version
  *
@@ -23,22 +26,23 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 namespace OC\Settings;
 
 use Closure;
+use OC\Settings\Personal\PersonalInfo;
 use OCP\AppFramework\QueryException;
 use OCP\IL10N;
 use OCP\ILogger;
 use OCP\IServerContainer;
 use OCP\IURLGenerator;
 use OCP\L10N\IFactory;
-use OCP\Settings\ISettings;
 use OCP\Settings\IManager;
 use OCP\Settings\ISection;
+use OCP\Settings\ISettings;
 use OCP\Settings\ISubAdminSettings;
 
 class Manager implements IManager {
@@ -245,32 +249,32 @@ class Manager implements IManager {
 
 		if ($section === 'overview') {
 			/** @var ISettings $form */
-			$form = $this->container->query(Admin\Overview::class);
+			$form = $this->container->query(\OCA\Settings\Admin\Overview::class);
 			if ($filter === null || $filter($form)) {
 				$forms[$form->getPriority()] = [$form];
 			}
 		}
 		if ($section === 'server') {
 			/** @var ISettings $form */
-			$form = $this->container->query(Admin\Server::class);
+			$form = $this->container->query(\OCA\Settings\Admin\Server::class);
 			if ($filter === null || $filter($form)) {
 				$forms[$form->getPriority()] = [$form];
 			}
-			$form = $this->container->query(Admin\Mail::class);
+			$form = $this->container->query(\OCA\Settings\Admin\Mail::class);
 			if ($filter === null || $filter($form)) {
 				$forms[$form->getPriority()] = [$form];
 			}
 		}
 		if ($section === 'security') {
 			/** @var ISettings $form */
-			$form = $this->container->query(Admin\Security::class);
+			$form = $this->container->query(\OCA\Settings\Admin\Security::class);
 			if ($filter === null || $filter($form)) {
 				$forms[$form->getPriority()] = [$form];
 			}
 		}
 		if ($section === 'sharing') {
 			/** @var ISettings $form */
-			$form = $this->container->query(Admin\Sharing::class);
+			$form = $this->container->query(\OCA\Settings\Admin\Sharing::class);
 			if ($filter === null || $filter($form)) {
 				$forms[$form->getPriority()] = [$form];
 			}
@@ -289,19 +293,23 @@ class Manager implements IManager {
 
 		if ($section === 'personal-info') {
 			/** @var ISettings $form */
-			$form = $this->container->query(Personal\PersonalInfo::class);
+			$form = $this->container->query(\OCA\Settings\Personal\PersonalInfo::class);
 			$forms[$form->getPriority()] = [$form];
-			$form = new Personal\ServerDevNotice();
+			$form = new \OCA\Settings\Personal\ServerDevNotice();
 			$forms[$form->getPriority()] = [$form];
 		}
 		if ($section === 'security') {
 			/** @var ISettings $form */
-			$form = $this->container->query(Personal\Security::class);
+			$form = $this->container->query(\OCA\Settings\Personal\Security::class);
+			$forms[$form->getPriority()] = [$form];
+
+			/** @var ISettings $form */
+			$form = $this->container->query(\OCA\Settings\Personal\Security\Authtokens::class);
 			$forms[$form->getPriority()] = [$form];
 		}
 		if ($section === 'additional') {
 			/** @var ISettings $form */
-			$form = $this->container->query(Personal\Additional::class);
+			$form = $this->container->query(\OCA\Settings\Personal\Additional::class);
 			$forms[$form->getPriority()] = [$form];
 		}
 
@@ -343,7 +351,7 @@ class Manager implements IManager {
 		}
 
 		$sections = [
-			0 => [new Section('personal-info', $this->l->t('Personal info'), 0, $this->url->imagePath('core', 'actions/info.svg'))],
+			0 => [new Section('personal-info', $this->l->t('Personal info'), 0, $this->url->imagePath('core', 'actions/user.svg'))],
 			5 => [new Section('security', $this->l->t('Security'), 0, $this->url->imagePath('settings', 'password.svg'))],
 			15 => [new Section('sync-clients', $this->l->t('Mobile & desktop'), 0, $this->url->imagePath('core', 'clients/phone.svg'))],
 		];

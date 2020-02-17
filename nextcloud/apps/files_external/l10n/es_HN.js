@@ -19,11 +19,11 @@ OC.L10N.register(
     "Check for changes" : "Verificar si hay cambios",
     "Never" : "Nunca",
     "Once every direct access" : "Una vez cada acceso directo",
+    "Read only" : "Sólo lectura",
     "Delete" : "Borrar",
     "Admin defined" : "Administrador definido",
     "Delete storage?" : "¿Borrar almacenamiento?",
     "Saved" : "Guardado",
-    "Saving..." : "Guardando...",
     "Save" : "Guardar",
     "Empty response from the server" : "Respuesta del servidor vacía",
     "Couldn't access. Please log out and in again to activate this mount point" : "No fue posible accesar. Por favor sal de la sesión y vuelve a entrar para activar este punto de montaje",
@@ -95,6 +95,7 @@ OC.L10N.register(
     "SFTP with secret key login" : "Inicio de sesión SFTP con llave secreta",
     "SMB / CIFS" : "SMB / CIFS",
     "Share" : "Compartir",
+    "Show hidden files" : "Mostrar archivos ocultos",
     "SMB / CIFS using OC login" : "SMB / CIFS usando inicio de sesión OC",
     "Username as share" : "Usuario como elemento compartido",
     "OpenStack Object Storage" : "OpenStack Object Storage",
@@ -105,6 +106,7 @@ OC.L10N.register(
     "Name" : "Nombre",
     "Storage type" : "Tipo de almacenamiento",
     "Scope" : "Alcance",
+    "Open documentation" : "Abrir la documentación",
     "Folder name" : "Nombre de la carpeta",
     "External storage" : "Almacenamiento externo",
     "Authentication" : "Autenticación",
@@ -112,6 +114,7 @@ OC.L10N.register(
     "Available for" : "Disponible para",
     "Add storage" : "Agregar almacenamiento",
     "Advanced settings" : "Configuraciones avanzadas",
-    "Allow users to mount external storage" : "Permitir a los usuarios montar almacenamiento externo"
+    "Allow users to mount external storage" : "Permitir a los usuarios montar almacenamiento externo",
+    "Saving..." : "Guardando..."
 },
 "nplurals=2; plural=(n != 1);");

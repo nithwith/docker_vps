@@ -26,6 +26,10 @@ declare(strict_types=1);
 namespace OCA\Text\Service;
 
 use \InvalidArgumentException;
+use OCA\Text\Db\Session;
+use OCP\DirectEditing\IManager;
+use OCP\IRequest;
+use OCP\Lock\ILockingProvider;
 use function json_encode;
 use OC\Files\Node\File;
 use OCA\Text\Db\Document;
@@ -94,7 +98,7 @@ class DocumentService {
 	 */
 	private $appData;
 
-	public function __construct(DocumentMapper $documentMapper, StepMapper $stepMapper, IAppData $appData, $userId, IRootFolder $rootFolder, ICacheFactory $cacheFactory, ILogger $logger, ShareManager $shareManager) {
+	public function __construct(DocumentMapper $documentMapper, StepMapper $stepMapper, IAppData $appData, $userId, IRootFolder $rootFolder, ICacheFactory $cacheFactory, ILogger $logger, ShareManager $shareManager, IRequest $request, IManager $directManager, ILockingProvider $lockingProvider) {
 		$this->documentMapper = $documentMapper;
 		$this->stepMapper = $stepMapper;
 		$this->userId = $userId;
@@ -103,10 +107,21 @@ class DocumentService {
 		$this->cache = $cacheFactory->createDistributed('text');
 		$this->logger = $logger;
 		$this->shareManager = $shareManager;
+		$this->lockingProvider = $lockingProvider;
 		try {
 			$this->appData->getFolder('documents');
 		} catch (NotFoundException $e) {
 			$this->appData->newFolder('documents');
+		}
+
+		$token = $request->getParam('token');
+		if ($this->userId === null && $token !== null) {
+			try {
+				$tokenObject = $directManager->getToken($token);
+				$tokenObject->extend();
+				$tokenObject->useTokenScope();
+				$this->userId = $tokenObject->getUser();
+			} catch (\Exception $e) {}
 		}
 	}
 
@@ -135,9 +150,9 @@ class DocumentService {
 		}
 
 		try {
-			$documentBaseFile = $this->appData->getFolder('documents')->getFile($file->getFileInfo()->getId());
+			$documentBaseFile = $this->appData->getFolder('documents')->getFile((string)$file->getFileInfo()->getId());
 		} catch (NotFoundException $e) {
-			$documentBaseFile = $this->appData->getFolder('documents')->newFile($file->getFileInfo()->getId());
+			$documentBaseFile = $this->appData->getFolder('documents')->newFile((string)$file->getFileInfo()->getId());
 		}
 		$documentBaseFile->putContent($file->fopen('r'));
 
@@ -159,7 +174,7 @@ class DocumentService {
 	 * @throws NotFoundException
 	 */
 	public function getBaseFile($document): ISimpleFile {
-		return $this->appData->getFolder('documents')->getFile($document);
+		return $this->appData->getFolder('documents')->getFile((string) $document);
 	}
 
 	public function get($documentId) {
@@ -176,38 +191,75 @@ class DocumentService {
 	 * @throws VersionMismatchException
 	 */
 	public function addStep($documentId, $sessionId, $steps, $version): array {
-		// TODO check cache
-		$document = $this->documentMapper->find($documentId);
-		if ($version !== $document->getCurrentVersion()) {
+		$document = null;
+		$oldVersion = null;
+
+		try {
+			$this->lockingProvider->acquireLock('document-push-lock-' . $documentId, ILockingProvider::LOCK_EXCLUSIVE);
+		} catch (LockedException $e) {
 			throw new VersionMismatchException('Version does not match');
 		}
-		$stepsJson = json_encode($steps);
-		if (!is_array($steps) || $stepsJson === null) {
-			throw new InvalidArgumentException('Failed to encode steps');
-		}
-		$validStepTypes = ['addMark', 'removeMark', 'replace', 'replaceAround'];
-		foreach ($steps as $step) {
-			if (array_key_exists('stepType', $step) && !in_array($step['stepType'], $validStepTypes, true)) {
-				throw new InvalidArgumentException('Invalid step data');
+
+		try {
+			$document = $this->documentMapper->find($documentId);
+			if ($version !== $document->getCurrentVersion()) {
+				throw new VersionMismatchException('Version does not match');
 			}
+			$stepsJson = json_encode($steps);
+			if (!is_array($steps) || $stepsJson === null) {
+				throw new InvalidArgumentException('Failed to encode steps');
+			}
+			$validStepTypes = ['addMark', 'removeMark', 'replace', 'replaceAround'];
+			foreach ($steps as $step) {
+				if (array_key_exists('stepType', $step) && !in_array($step['stepType'], $validStepTypes, true)) {
+					throw new InvalidArgumentException('Invalid step data');
+				}
+			}
+			$oldVersion = $document->getCurrentVersion();
+			$newVersion = $oldVersion + count($steps);
+			$this->cache->set('document-version-' . $document->getId(), $newVersion);
+			$document->setCurrentVersion($newVersion);
+			$this->documentMapper->update($document);
+			$step = new Step();
+			$step->setData($stepsJson);
+			$step->setSessionId($sessionId);
+			$step->setDocumentId($documentId);
+			$step->setVersion($version + 1);
+			$this->stepMapper->insert($step);
+			// TODO write steps to cache for quicker reading
+			$this->lockingProvider->releaseLock('document-push-lock-' . $documentId, ILockingProvider::LOCK_EXCLUSIVE);
+			return $steps;
+		} catch (DoesNotExistException $e) {
+			$this->lockingProvider->releaseLock('document-push-lock-' . $documentId, ILockingProvider::LOCK_EXCLUSIVE);
+			throw $e;
+		} catch (\Throwable $e) {
+			if ($document !== null && $oldVersion !== null) {
+				$this->logger->logException($e, ['message' => 'This should never happen. An error occured when storing the version, trying to recover the last stable one']);
+				$document->setCurrentVersion($oldVersion);
+				$this->documentMapper->update($document);
+				$this->cache->set('document-version-' . $document->getId(), $oldVersion);
+				$this->stepMapper->deleteAfterVersion($documentId, $oldVersion);
+			}
+			$this->lockingProvider->releaseLock('document-push-lock-' . $documentId, ILockingProvider::LOCK_EXCLUSIVE);
+			throw $e;
 		}
-		$newVersion = $document->getCurrentVersion() + count($steps);
-		$document->setCurrentVersion($newVersion);
-		$this->documentMapper->update($document);
-		$step = new Step();
-		$step->setData($stepsJson);
-		$step->setSessionId($sessionId);
-		$step->setDocumentId($documentId);
-		$step->setVersion($version+1);
-		$this->stepMapper->insert($step);
-		$this->cache->set('document-version-'.$document->getId(), $newVersion);
-		// TODO restore old version for document if adding steps has failed
-		// TODO write steps to cache for quicker reading
-		return $steps;
 	}
 
 	public function getSteps($documentId, $lastVersion) {
-		return $this->stepMapper->find($documentId, $lastVersion);
+		$steps = $this->stepMapper->find($documentId, $lastVersion);
+		//return $steps;
+		$unique_array = [];
+		foreach($steps as $step) {
+			$version = $step->getVersion();
+			if (!array_key_exists($version, $unique_array)) {
+				$unique_array[(string)$version] = $step;
+			} else {
+				// found duplicate step
+				// FIXME: verify that this version is the correct one
+				//$this->stepMapper->delete($step);
+			}
+		}
+		return array_values($unique_array);
 	}
 
 	/**
@@ -216,7 +268,7 @@ class DocumentService {
 	 * @param $autoaveDocument
 	 * @param bool $force
 	 * @param bool $manualSave
-	 * @param null $token
+	 * @param null $shareToken
 	 * @return Document
 	 * @throws DocumentSaveConflictException
 	 * @throws DoesNotExistException
@@ -226,22 +278,15 @@ class DocumentService {
 	 * @throws NotPermittedException
 	 * @throws ShareNotFound
 	 */
-	public function autosave($documentId, $version, $autoaveDocument, $force = false, $manualSave = false, $token = null, $filePath = null): Document {
+	public function autosave($file, $documentId, $version, $autoaveDocument, $force = false, $manualSave = false, $shareToken = null, $filePath = null): Document {
 		/** @var Document $document */
 		$document = $this->documentMapper->find($documentId);
-
-		/** @var File $file */
-		if (!$token) {
-			$file = $this->getFileById($documentId);
-		} else {
-			 $file = $this->getFileByShareToken($token, $filePath);
-		}
 
 		if ($file === null) {
 			throw new NotFoundException();
 		}
 
-		if ($this->isReadOnly($file, $token)) {
+		if ($this->isReadOnly($file, $shareToken)) {
 			return $document;
 		}
 
@@ -274,7 +319,7 @@ class DocumentService {
 			// Ignore lock since it might occur when multiple people save at the same time
 			return $document;
 		}
-		$document->setLastSavedVersion($version);
+		$document->setLastSavedVersion($document->getCurrentVersion());
 		$document->setLastSavedVersionTime(time());
 		$document->setLastSavedVersionEtag($file->getEtag());
 		$this->documentMapper->update($document);
@@ -296,7 +341,7 @@ class DocumentService {
 				$this->documentMapper->delete($document);
 
 				try {
-					$this->appData->getFolder('documents')->getFile($documentId)->delete();
+					$this->appData->getFolder('documents')->getFile((string)$documentId)->delete();
 				} catch (NotFoundException $e) {
 				} catch (NotPermittedException $e) {
 				}
@@ -308,19 +353,48 @@ class DocumentService {
 	}
 
 	/**
+	 * @param Session $session
+	 * @param $shareToken
+	 * @return \OCP\Files\File|Folder|Node
 	 * @throws NotFoundException
 	 */
-	public function getFileById($fileId): Node {
-		$files = $this->rootFolder->getUserFolder($this->userId)->getById($fileId);
+	public function getFileForSession(Session $session, $shareToken) {
+		if ($session->getUserId() !== null && $shareToken === null) {
+			return $this->getFileById($session->getDocumentId(), $session->getUserId());
+		}
+		try {
+			$share = $this->shareManager->getShareByToken($shareToken);
+		} catch (ShareNotFound $e) {
+			throw new NotFoundException();
+		}
+
+		$node = $share->getNode();
+		if ($node instanceof \OCP\Files\File) {
+			return $node;
+		}
+		if ($node instanceof Folder) {
+			return $node->getById($session->getDocumentId())[0];
+		}
+		throw new \InvalidArgumentException('No proper share data');
+	}
+
+	/**
+	 * @throws NotFoundException
+	 */
+	public function getFileById($fileId, $userId = null): Node {
+		try {
+			$userFolder = $this->rootFolder->getUserFolder($this->userId ?? $userId);
+		} catch (\OC\User\NoUserException $e) {
+			// It is a bit hacky to depend on internal exceptions here. But it is the best we can do for now
+			throw new NotFoundException();
+		}
+
+		$files = $userFolder->getById($fileId);
 		if (count($files) === 0) {
 			throw new NotFoundException();
 		}
 
 		return $files[0];
-	}
-
-	public function getFileByPath($path): Node {
-		return $this->rootFolder->getUserFolder($this->userId)->get($path);
 	}
 
 	/**
@@ -332,7 +406,6 @@ class DocumentService {
 	public function getFileByShareToken($shareToken, $path = null) {
 		try {
 			$share = $this->shareManager->getShareByToken($shareToken);
-
 		} catch (ShareNotFound $e) {
 			throw new NotFoundException();
 		}

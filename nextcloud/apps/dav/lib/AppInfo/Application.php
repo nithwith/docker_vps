@@ -5,8 +5,11 @@
  * @author Bjoern Schiessle <bjoern@schiessle.org>
  * @author Georg Ehrke <oc.list@georgehrke.com>
  * @author Joas Schilling <coding@schilljs.com>
+ * @author John Molakvoæ (skjnldsv) <skjnldsv@protonmail.com>
  * @author Roeland Jago Douma <roeland@famdouma.nl>
+ * @author Thomas Citharel <tcit@tcit.fr>
  * @author Thomas Müller <thomas.mueller@tmit.eu>
+ * @author Tobia De Koninck <tobia@ledfan.be>
  *
  * @license AGPL-3.0
  *
@@ -20,9 +23,10 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
+
 namespace OCA\DAV\AppInfo;
 
 use OC\AppFramework\Utility\SimpleContainer;
@@ -42,9 +46,9 @@ use OCA\DAV\CardDAV\ContactsManager;
 use OCA\DAV\CardDAV\PhotoCache;
 use OCA\DAV\CardDAV\SyncService;
 use OCA\DAV\HookManager;
-use \OCP\AppFramework\App;
-use OCP\Contacts\IManager as IContactsManager;
+use OCP\AppFramework\App;
 use OCP\Calendar\IManager as ICalendarManager;
+use OCP\Contacts\IManager as IContactsManager;
 use OCP\IUser;
 use Symfony\Component\EventDispatcher\GenericEvent;
 

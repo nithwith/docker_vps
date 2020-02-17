@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * @copyright 2019 Christoph Wurst <christoph@winzerhof-wurst.at>
  *
- * @author 2019 Christoph Wurst <christoph@winzerhof-wurst.at>
+ * @author Christoph Wurst <christoph@winzerhof-wurst.at>
  *
  * @license GNU AGPL version 3 or any later version
  *
@@ -20,7 +20,8 @@ declare(strict_types=1);
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 namespace OCP\EventDispatcher;
@@ -57,5 +58,17 @@ interface IEventDispatcher {
 	 * @since 17.0.0
 	 */
 	public function dispatch(string $eventName, Event $event): void;
+
+	/**
+	 * Dispatch a typed event
+	 *
+	 * Only use this with subclasses of ``\OCP\EventDispatcher\Event``.
+	 * The object's class will determine the event name.
+	 *
+	 * @param Event $event
+	 *
+	 * @since 18.0.0
+	 */
+	public function dispatchTyped(Event $event): void;
 
 }

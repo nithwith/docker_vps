@@ -61,13 +61,14 @@
     "Delete" : "Forigi",
     "The configuration is invalid" : "La agordo ne validas",
     "Save" : "Konservi",
+    "Browse the app store" : "Esplori la aplikaĵejon",
     "Show less" : "Montri malpli",
     "Show more" : "Montri pli",
-    "File name" : "Dosiernomo",
-    "is" : "estas",
-    "is not" : "ne estas",
     "matches" : "kongruas kun",
     "does not match" : "ne kongruas kun",
+    "is" : "estas",
+    "is not" : "ne estas",
+    "File name" : "Dosiernomo",
     "File MIME type" : "Dosiera MIME-tipo",
     "File size (upload)" : "Dosiergrando (alŝuto)",
     "less" : "malpli",
@@ -105,10 +106,9 @@
     "End" : "Fino",
     "Select timezone…" : "Elekti horzonon...",
     "Sync clients" : "Sinkronigaj klientoj",
-    "Workflow" : "Laborfluo",
+    "Tag management" : "Etikeda administrado",
     "Files workflow engine" : "Modulo de dosiera laborfluo",
     "Open documentation" : "Malfermi dokumentaron",
-    "Loading…" : "Ŝargado...",
-    "Tag management" : "Etikeda administrado"
+    "Loading…" : "Ŝargado..."
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

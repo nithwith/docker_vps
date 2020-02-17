@@ -3,6 +3,7 @@
  * @copyright 2019, Georg Ehrke <oc.list@georgehrke.com>
  *
  * @author Georg Ehrke <oc.list@georgehrke.com>
+ * @author Roeland Jago Douma <roeland@famdouma.nl>
  *
  * @license GNU AGPL version 3 or any later version
  *
@@ -17,9 +18,10 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 namespace OCA\DAV\CalDAV\ResourceBooking;
 
 use OCA\DAV\CalDAV\Proxy\ProxyMapper;
@@ -28,9 +30,9 @@ use OCP\IDBConnection;
 use OCP\IGroupManager;
 use OCP\ILogger;
 use OCP\IUserSession;
-use Sabre\DAVACL\PrincipalBackend\BackendInterface;
 use Sabre\DAV\Exception;
-use \Sabre\DAV\PropPatch;
+use Sabre\DAV\PropPatch;
+use Sabre\DAVACL\PrincipalBackend\BackendInterface;
 
 abstract class AbstractPrincipalBackend implements BackendInterface {
 

@@ -2,6 +2,9 @@
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
+ * @author Georg Ehrke <oc.list@georgehrke.com>
+ * @author Morris Jobke <hey@morrisjobke.de>
+ * @author Robin Appelman <robin@icewind.nl>
  * @author Roeland Jago Douma <roeland@famdouma.nl>
  * @author Victor Dubiniuk <dubiniuk@owncloud.com>
  *
@@ -17,7 +20,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
 
@@ -25,13 +28,13 @@ namespace OCA\Files_Trashbin\AppInfo;
 
 use OCA\DAV\CalDAV\Proxy\ProxyMapper;
 use OCA\DAV\Connector\Sabre\Principal;
+use OCA\Files_Trashbin\Capabilities;
+use OCA\Files_Trashbin\Expiration;
 use OCA\Files_Trashbin\Trash\ITrashManager;
 use OCA\Files_Trashbin\Trash\TrashManager;
 use OCP\AppFramework\App;
-use OCA\Files_Trashbin\Expiration;
 use OCP\AppFramework\IAppContainer;
 use OCP\AppFramework\Utility\ITimeFactory;
-use OCA\Files_Trashbin\Capabilities;
 
 class Application extends App {
 	public function __construct (array $urlParams = []) {
@@ -46,12 +49,7 @@ class Application extends App {
 		/*
 		 * Register expiration
 		 */
-		$container->registerService('Expiration', function($c) {
-			return  new Expiration(
-				$c->query('ServerContainer')->getConfig(),
-				$c->query(ITimeFactory::class)
-			);
-		});
+		$container->registerAlias('Expiration', Expiration::class);
 
 		/*
 		 * Register $principalBackend for the DAV collection

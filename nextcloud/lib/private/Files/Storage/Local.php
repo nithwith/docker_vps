@@ -2,6 +2,7 @@
 /**
  * @copyright Copyright (c) 2016, ownCloud, Inc.
  *
+ * @author Arthur Schiwon <blizzz@arthur-schiwon.de>
  * @author Bart Visscher <bartv@thisnet.nl>
  * @author Boris Rybalkin <ribalkin@gmail.com>
  * @author Brice Maron <brice@bmaron.net>
@@ -33,7 +34,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
 
@@ -424,12 +425,26 @@ class Local extends \OC\Files\Storage\Common {
 	public function getETag($path) {
 		if ($this->is_file($path)) {
 			$stat = $this->stat($path);
-			return md5(
-				$stat['mtime'] .
-				$stat['ino'] .
-				$stat['dev'] .
-				$stat['size']
-			);
+
+			if ($stat === false) {
+				return md5('');
+			}
+
+			$toHash = '';
+			if (isset($stat['mtime'])) {
+				$toHash .= $stat['mtime'];
+			}
+			if (isset($stat['ino'])) {
+				$toHash .= $stat['ino'];
+			}
+			if (isset($stat['dev'])) {
+				$toHash .= $stat['dev'];
+			}
+			if (isset($stat['size'])) {
+				$toHash .= $stat['size'];
+			}
+
+			return md5($toHash);
 		} else {
 			return parent::getETag($path);
 		}

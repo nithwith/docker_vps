@@ -37,6 +37,14 @@ return [
 		['name' => 'PublicSession#fetch', 'url' => '/public/session/fetch', 'verb' => 'GET'],
 		['name' => 'PublicSession#sync', 'url' => '/public/session/sync', 'verb' => 'POST'],
 		['name' => 'PublicSession#push', 'url' => '/public/session/push', 'verb' => 'POST'],
+
 		['name' => 'PublicSession#close', 'url' => '/public/session/close', 'verb' => 'GET'],
+
+		['name' => 'Settings#updateConfig', 'url' => '/settings', 'verb' => 'POST'],
+	],
+	'ocs' => [
+		['name' => 'Workspace#folder', 'url' => '/workspace', 'verb' => 'GET'],
+		['name' => 'Workspace#publicFolder', 'url' => '/public/workspace', 'verb' => 'GET'],
+		['name' => 'Workspace#direct', 'url' => '/workspace/direct', 'verb' => 'POST'],
 	]
 ];

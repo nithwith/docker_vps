@@ -5,6 +5,7 @@
  * @author Arthur Schiwon <blizzz@arthur-schiwon.de>
  * @author Joas Schilling <coding@schilljs.com>
  * @author Lukas Reschke <lukas@statuscode.ch>
+ * @author Morris Jobke <hey@morrisjobke.de>
  * @author Robin Appelman <robin@icewind.nl>
  * @author Roeland Jago Douma <roeland@famdouma.nl>
  * @author Thomas Müller <thomas.mueller@tmit.eu>
@@ -21,7 +22,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
 
@@ -34,8 +35,8 @@ use OCP\Comments\ICommentsEventHandler;
 use OCP\Comments\ICommentsManager;
 use OCP\Comments\NotFoundException;
 use OCP\DB\QueryBuilder\IQueryBuilder;
-use OCP\IDBConnection;
 use OCP\IConfig;
+use OCP\IDBConnection;
 use OCP\ILogger;
 use OCP\IUser;
 
@@ -600,11 +601,13 @@ class Manager implements ICommentsManager {
 		$query = $qb->select('f.fileid')
 			->addSelect($qb->func()->count('c.id', 'num_ids'))
 			->from('filecache', 'f')
-			->leftJoin('f', 'comments', 'c', $qb->expr()->eq(
-				'f.fileid', $qb->expr()->castColumn('c.object_id', IQueryBuilder::PARAM_INT)
+			->leftJoin('f', 'comments', 'c', $qb->expr()->andX(
+				$qb->expr()->eq('f.fileid', $qb->expr()->castColumn('c.object_id', IQueryBuilder::PARAM_INT)),
+				$qb->expr()->eq('c.object_type', $qb->createNamedParameter('files'))
 			))
-			->leftJoin('c', 'comments_read_markers', 'm', $qb->expr()->eq(
-				'c.object_id', 'm.object_id'
+			->leftJoin('c', 'comments_read_markers', 'm', $qb->expr()->andX(
+				$qb->expr()->eq('c.object_id', 'm.object_id'),
+				$qb->expr()->eq('m.object_type', $qb->createNamedParameter('files'))
 			))
 			->where(
 				$qb->expr()->andX(

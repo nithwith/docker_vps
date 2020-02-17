@@ -1,58 +1,85 @@
-<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Using the occ command &#8212; Nextcloud latest Administration Manual latest documentation</title>
-    <link rel="stylesheet" href="../_static/" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="../_static/main.min.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles.css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="../_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-3.1.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Using the occ command &mdash; Nextcloud latest Administration Manual latest documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Activity app" href="activity_configuration.html" />
-    <link rel="prev" title="Warnings on admin page" href="security_setup_warnings.html" />
-<meta charset='utf-8'>
-<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
-<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1'>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#1d2d44">
+    <link rel="prev" title="Warnings on admin page" href="security_setup_warnings.html" /> 
 
-  </head><body>
+  
+  <script src="../_static/js/modernizr.min.js"></script>
 
+</head>
 
-<div class="wrap container not-front">
-  <div class="content row">
-  <main class="main">
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
     
-			<div class="row">
-				<div class="col-md-3">
-					<div class="sidebar">
-            <h1>Nextcloud latest Administration Manual</h1>
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../contents.html">
+          
+
+          
             
-            <div class="sidebar-search">
-              <form class="headersearch" action="../search.html" method="get">
-                <input type="text" value="" name="q" id="q" class="form-control" /> 
-                <button  class="btn btn-default" type="submit" id="searchsubmit">Search</button>
-              </form>
-            </div>
+            <img src="../_static/logo-white.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
             
-							<div class="menu-support-container">
-								<ul id="menu-support" class="menu">
-									<ul>
-                    <li><a href="../contents.html">Table of Contents</a></li>
-									</ul>
-                  <ul class="current">
+            
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_schedule.html">Maintenance and release schedule</a></li>
@@ -65,13 +92,25 @@
 <li class="toctree-l3"><a class="reference internal" href="#enabling-autocompletion">Enabling autocompletion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#apps-commands">Apps commands</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#background-jobs-selector">Background jobs selector</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#config-commands">Config commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#config-commands">Config commands</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#getting-a-single-configuration-value">Getting a single configuration value</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#setting-a-single-configuration-value">Setting a single configuration value</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#setting-an-array-configuration-value">Setting an array configuration value</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#setting-a-hierarchical-configuration-value">Setting a hierarchical configuration value</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deleting-a-single-configuration-value">Deleting a single configuration value</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#dav-commands">Dav commands</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#database-conversion">Database conversion</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#add-missing-indices">Add missing indices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#encryption">Encryption</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#federation-sync">Federation sync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#file-operations">File operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-operations">File operations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scan">Scan</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cleanup">Cleanup</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#transfer">Transfer</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#files-external">Files external</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#integrity-check">Integrity check</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#l10n-create-javascript-translation-files-for-apps">l10n, create JavaScript translation files for apps</a></li>
@@ -113,28 +152,75 @@
 <li class="toctree-l1"><a class="reference internal" href="../configuration_mimetypes/index.html">Mimetypes management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../maintenance/index.html">Maintenance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../issues/index.html">Issues and troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gdpr/index.html">GDPR</a></li>
 </ul>
 
-								</ul>
-							</div>
-					</div>
-				</div>
-        
-
-				<div class="col-md-9">
-					<div class="page-content">
             
-<ul class="prevnext-title list-unstyled list-inline">
-  <li class="prev">
-    <a href="security_setup_warnings.html" title="Previous Chapter: Warnings on admin page"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm">&laquo; Warnings on admin page</span>
-    </a>
-  </li>
-  <li class="next">
-    <a href="activity_configuration.html" title="Next Chapter: Activity app"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm">Activity app &raquo;</span>
-    </a>
-  </li>
-</ul>
-						
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../contents.html">Nextcloud latest Administration Manual</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../contents.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Nextcloud configuration</a> &raquo;</li>
+        
+      <li>Using the occ command</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/nextcloud/documentation/edit/master/admin_manual/configuration_server/occ_command.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
   <div class="section" id="using-the-occ-command">
 <h1>Using the occ command<a class="headerlink" href="#using-the-occ-command" title="Permalink to this headline">¶</a></h1>
 <p>Nextcloud’s <code class="docutils literal notranslate"><span class="pre">occ</span></code> command (origins from “ownCloud Console”) is Nextcloud’s command-line
@@ -324,8 +410,9 @@ shell’s profile (eg. <code class="docutils literal notranslate"><span class="p
  <span class="n">app</span><span class="p">:</span><span class="n">check</span><span class="o">-</span><span class="n">code</span>   <span class="n">check</span> <span class="n">code</span> <span class="n">to</span> <span class="n">be</span> <span class="n">compliant</span>
  <span class="n">app</span><span class="p">:</span><span class="n">disable</span>      <span class="n">disable</span> <span class="n">an</span> <span class="n">app</span>
  <span class="n">app</span><span class="p">:</span><span class="n">enable</span>       <span class="n">enable</span> <span class="n">an</span> <span class="n">app</span>
- <span class="n">app</span><span class="p">:</span><span class="n">getpath</span>      <span class="n">Get</span> <span class="n">an</span> <span class="n">absolute</span> <span class="n">path</span> <span class="n">to</span> <span class="n">the</span> <span class="n">app</span> <span class="n">directory</span>
- <span class="n">app</span><span class="p">:</span><span class="nb">list</span>         <span class="n">List</span> <span class="nb">all</span> <span class="n">available</span> <span class="n">apps</span>
+ <span class="n">app</span><span class="p">:</span><span class="n">getpath</span>      <span class="n">get</span> <span class="n">an</span> <span class="n">absolute</span> <span class="n">path</span> <span class="n">to</span> <span class="n">the</span> <span class="n">app</span> <span class="n">directory</span>
+ <span class="n">app</span><span class="p">:</span><span class="nb">list</span>         <span class="nb">list</span> <span class="nb">all</span> <span class="n">available</span> <span class="n">apps</span>
+ <span class="n">app</span><span class="p">:</span><span class="n">update</span>       <span class="n">update</span> <span class="n">an</span> <span class="n">app</span> <span class="ow">or</span> <span class="nb">all</span> <span class="n">apps</span>
 </pre></div>
 </div>
 <p>List all of your installed apps, and show whether they are
@@ -367,6 +454,14 @@ App is compliant - awesome job!
 <p>You can get the full filepath to an app:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">-</span><span class="n">u</span> <span class="n">www</span><span class="o">-</span><span class="n">data</span> <span class="n">php</span> <span class="n">occ</span> <span class="n">app</span><span class="p">:</span><span class="n">getpath</span> <span class="n">notifications</span>
 <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">nextcloud</span><span class="o">/</span><span class="n">apps</span><span class="o">/</span><span class="n">notifications</span>
+</pre></div>
+</div>
+<p>To update an app, for instance Contacts:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">-</span><span class="n">u</span> <span class="n">www</span><span class="o">-</span><span class="n">data</span> <span class="n">php</span> <span class="n">occ</span> <span class="n">app</span><span class="p">:</span><span class="n">update</span> <span class="n">contacts</span>
+</pre></div>
+</div>
+<p>To update all apps:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="o">-</span><span class="n">u</span> <span class="n">www</span><span class="o">-</span><span class="n">data</span> <span class="n">php</span> <span class="n">occ</span> <span class="n">app</span><span class="p">:</span><span class="n">update</span> <span class="o">--</span><span class="nb">all</span>
 </pre></div>
 </div>
 </div>
@@ -979,7 +1074,7 @@ different log file path. Set your rotation by log file size in bytes with
 are <code class="docutils literal notranslate"><span class="pre">file</span></code>, <code class="docutils literal notranslate"><span class="pre">warning</span></code>, and <code class="docutils literal notranslate"><span class="pre">UTC</span></code>. Available options are:</p>
 <ul class="simple">
 <li>–backend [file, syslog, errorlog, systemd]</li>
-<li>–level [debug, info, warning, error]</li>
+<li>–level [debug, info, warning, error, fatal]</li>
 </ul>
 </div>
 <div class="section" id="maintenance-commands">
@@ -1475,22 +1570,102 @@ should be used where users get a one-time code to log into their account.</p>
 </div>
 
 
-            
-<ul class="prevnext-title list-unstyled list-inline">
-  <li class="prev">
-    <a href="security_setup_warnings.html" title="Previous Chapter: Warnings on admin page"><span class="glyphicon glyphicon-chevron-left visible-sm"></span><span class="hidden-sm">&laquo; Warnings on admin page</span>
-    </a>
-  </li>
-  <li class="next">
-    <a href="activity_configuration.html" title="Next Chapter: Activity app"><span class="glyphicon glyphicon-chevron-right visible-sm"></span><span class="hidden-sm">Activity app &raquo;</span>
-    </a>
-  </li>
-</ul>
-					</div>
-				</div>
-			</div>
-  </main>  
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="activity_configuration.html" class="btn btn-neutral float-right" title="Activity app" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="security_setup_warnings.html" class="btn btn-neutral" title="Warnings on admin page" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020 Nextcloud GmbH
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
   </div>
-</div>
-  </body>
+  
+
+  <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"> Read the Docs</span>
+      v: latest
+      <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+      <dl>
+        <dt>Versions</dt>
+        
+          <dd><a href="https://docs.nextcloud.com/server/15/admin_manual">15</a></dd>
+        
+          <dd><a href="https://docs.nextcloud.com/server/16/admin_manual">16</a></dd>
+        
+          <dd><a href="https://docs.nextcloud.com/server/17/admin_manual">17</a></dd>
+        
+          <dd><a href="https://docs.nextcloud.com/server/stable/admin_manual">stable</a></dd>
+        
+          <dd><a href="https://docs.nextcloud.com/server/latest/admin_manual">latest</a></dd>
+        
+      </dl>
+      <dl>
+        <dt>Downloads</dt>
+        
+      </dl>
+      <dl>
+        <dt>On Read the Docs</dt>
+          <dd>
+            <a href="///projects//?fromdocs=">Project Home</a>
+          </dd>
+          <dd>
+            <a href="///builds//?fromdocs=">Builds</a>
+          </dd>
+      </dl>
+      <hr/>
+      Free document hosting provided by <a href="http://www.readthedocs.org">Read the Docs</a>.
+
+    </div>
+  </div>
+
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
 </html>

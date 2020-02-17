@@ -69,7 +69,7 @@ input[name="subscriptionKey"] {
 	display: inline-block;
 	font-family: monospace;
 	font-size: 14px;
-	background-color: #f7f7f7;
+	background-color: var(--color-background-dark);
 	padding: 0 4px;
 	border-radius: 3px;
 }

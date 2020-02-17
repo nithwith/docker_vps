@@ -21,5 +21,7 @@
  *
  */
 
-$app = new \OCA\Support\AppInfo\Application();
+use OCA\Support\AppInfo\Application;
+
+$app = \OC::$server->query(Application::class);
 $app->register();

@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[59],{511:function(e,t,n){e.exports=function(){"use strict";return{code:"tr",week:{dow:1,doy:7},buttonText:{prev:"geri",next:"ileri",today:"bugün",month:"Ay",week:"Hafta",day:"Gün",list:"Ajanda"},weekLabel:"Hf",allDayText:"Tüm gün",eventLimitText:"daha fazla",noEventsMessage:"Gösterilecek etkinlik yok"}}()}}]);
-//# sourceMappingURL=calendar.59.23b813b0f0f5880b7575.js.map

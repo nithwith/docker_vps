@@ -4,8 +4,8 @@
  *
  * @author Arthur Schiwon <blizzz@arthur-schiwon.de>
  * @author Joas Schilling <coding@schilljs.com>
- * @author Juan Pablo Villafáñez <jvillafanez@solidgear.es>
  * @author Jörn Friedrich Dreyer <jfd@butonic.de>
+ * @author Juan Pablo Villafáñez <jvillafanez@solidgear.es>
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Roger Szabo <roger.szabo@web.de>
  * @author Thomas Müller <thomas.mueller@tmit.eu>
@@ -24,7 +24,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
 
@@ -173,6 +173,21 @@ class User {
 				$this->markRefreshTime();
 			}
 		}
+	}
+
+	/**
+	 * marks a user as deleted
+	 *
+	 * @throws \OCP\PreConditionNotMetException
+	 */
+	public function markUser() {
+		$curValue = $this->config->getUserValue($this->getUsername(), 'user_ldap', 'isDeleted', '0');
+		if($curValue === '1') {
+			// the user is already marked, do not write to DB again
+			return;
+		}
+		$this->config->setUserValue($this->getUsername(), 'user_ldap', 'isDeleted', '1');
+		$this->config->setUserValue($this->getUsername(), 'user_ldap', 'foundDeleted', (string)time());
 	}
 
 	/**

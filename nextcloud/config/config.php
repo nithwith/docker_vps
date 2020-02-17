@@ -26,7 +26,7 @@ $CONFIG = array (
   ),
   'datadirectory' => '/var/www/html/data',
   'dbtype' => 'mysql',
-  'version' => '17.0.2.1',
+  'version' => '18.0.1.3',
   'overwrite.cli.url' => 'http://cloud.theomarty.fr',
   'dbname' => 'nextcloud',
   'dbhost' => 'mysql:3306',
@@ -37,4 +37,5 @@ $CONFIG = array (
   'dbpassword' => 'laqdQzpl7PF/QEs3BDSxjKeHpzpK3e',
   'installed' => true,
   'maintenance' => false,
+  'loglevel' => 2,
 );

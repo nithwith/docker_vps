@@ -19,11 +19,11 @@ OC.L10N.register(
     "Check for changes" : "ცვლილებების შემოწმება",
     "Never" : "არასდროს",
     "Once every direct access" : "ყოველთვის პირდაპირი წვდომისას",
+    "Read only" : "მხოლოდ-კითხვადი",
     "Delete" : "წაშლა",
     "Admin defined" : "განსაზღვრულია ადმინისტრატორის მიერ",
     "Delete storage?" : "გავაუქმოთ საცავი?",
     "Saved" : "შენახულია",
-    "Saving..." : "ინახება…",
     "Save" : "შენახვა",
     "Empty response from the server" : "სერვერმა დააბრუნა ცარიელი პასუხი",
     "Couldn't access. Please log out and in again to activate this mount point" : "წვდომა ვერ მოხერხდა. ამ მონტაჟის წერტილის გასააქტიურებლად გთხოვთ გახვიდეთ და ახლიდან გაიაროთ ავტორიზაცია.",
@@ -98,6 +98,7 @@ OC.L10N.register(
     "SFTP with secret key login" : "SFTP საიდუმლო გასაღების ლოგინით",
     "SMB / CIFS" : "SMB / CIFS",
     "Share" : "გაზიარება",
+    "Show hidden files" : "დამალული ფაილების ჩვენება",
     "SMB / CIFS using OC login" : "SMB / CIFS OC ლოგინით",
     "Username as share" : "მომხმარებლის სახელი გაზიარებად",
     "OpenStack Object Storage" : "OpenStack ობიექტ საცავი",
@@ -110,6 +111,7 @@ OC.L10N.register(
     "Name" : "სახელი",
     "Storage type" : "საცავის სახეობა",
     "Scope" : "ფარგლები",
+    "Open documentation" : "ღია დოკუმენტაცია",
     "Folder name" : "დირექტორიის სახელი",
     "External storage" : "ექსტერნალური საცავი",
     "Authentication" : "აუტენტიფიკაცია",
@@ -118,6 +120,7 @@ OC.L10N.register(
     "Click to recheck the configuration" : "დააწკაპუნეთ კონფიგურაციის ხელახალი შემოწმებისთვის",
     "Add storage" : "საცავის დამატება",
     "Advanced settings" : "დამატებითი პარამეტრები",
-    "Allow users to mount external storage" : "მივცეთ მომხმარებლებს გარე საცავის მონტაჟის უფლება"
+    "Allow users to mount external storage" : "მივცეთ მომხმარებლებს გარე საცავის მონტაჟის უფლება",
+    "Saving..." : "ინახება…"
 },
 "nplurals=2; plural=(n!=1);");

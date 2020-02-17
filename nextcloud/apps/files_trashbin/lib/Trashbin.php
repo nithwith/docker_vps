@@ -6,11 +6,13 @@
  * @author Bastien Ho <bastienho@urbancube.fr>
  * @author Bjoern Schiessle <bjoern@schiessle.org>
  * @author Björn Schießle <bjoern@schiessle.org>
+ * @author Christoph Wurst <christoph@winzerhof-wurst.at>
  * @author Florin Peter <github@florin-peter.de>
  * @author Georg Ehrke <oc.list@georgehrke.com>
  * @author Joas Schilling <coding@schilljs.com>
- * @author Juan Pablo Villafáñez <jvillafanez@solidgear.es>
  * @author Jörn Friedrich Dreyer <jfd@butonic.de>
+ * @author Juan Pablo Villafáñez <jvillafanez@solidgear.es>
+ * @author Lars Knickrehm <mail@lars-sh.de>
  * @author Lukas Reschke <lukas@statuscode.ch>
  * @author Morris Jobke <hey@morrisjobke.de>
  * @author Qingping Hou <dave2008713@gmail.com>
@@ -35,7 +37,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License, version 3,
- * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ * along with this program. If not, see <http://www.gnu.org/licenses/>
  *
  */
 
@@ -747,7 +749,8 @@ class Trashbin {
 	 */
 	private static function scheduleExpire($user) {
 		// let the admin disable auto expire
-		$application = new Application();
+		/** @var Application $application */
+		$application = \OC::$server->query(Application::class);
 		$expiration = $application->getContainer()->query('Expiration');
 		if ($expiration->isEnabled()) {
 			\OC::$server->getCommandBus()->push(new Expire($user));
@@ -764,7 +767,8 @@ class Trashbin {
 	 * @return int size of deleted files
 	 */
 	protected static function deleteFiles($files, $user, $availableSpace) {
-		$application = new Application();
+		/** @var Application $application */
+		$application = \OC::$server->query(Application::class);
 		$expiration = $application->getContainer()->query('Expiration');
 		$size = 0;
 
@@ -791,8 +795,8 @@ class Trashbin {
 	 * @return integer[] size of deleted files and number of deleted files
 	 */
 	public static function deleteExpiredFiles($files, $user) {
-		$application = new Application();
-		$expiration = $application->getContainer()->query('Expiration');
+		/** @var Expiration $expiration */
+		$expiration = \OC::$server->query(Expiration::class);
 		$size = 0;
 		$count = 0;
 		foreach ($files as $file) {
