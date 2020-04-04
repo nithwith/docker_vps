@@ -1,5 +1,5 @@
 ## Getting started
-First you need docker, and that's pretty much it. 
+First you need docker, and that's pretty much it.
 
 Add your .env file for define :
 
@@ -8,11 +8,14 @@ Add your .env file for define :
 `WORDPRESS_DOMAIN`
 `NEXTCLOUD_DOMAIN`
 `PORTAINER_DOMAIN`
+`ODOO_DOMAIN`
 `NEXTCLOUD_ADMIN_USER`
 `NEXTCLOUD_ADMIN_PASSWORD`
 `NEXTCLOUD_DB`
 `MYSQL_USER`
 `MYSQL_PASSWORD`
+`ODOO_USER`
+`ODOO_PASSWORD`
 
 
 After just launch `bash start_all.sh` and it will launch al the services
@@ -22,3 +25,4 @@ After just launch `bash start_all.sh` and it will launch al the services
 - nextcloud for personnal cloud platform
 - portainer for docker management
 - phpmyadmin for db management
+- odoo for work management

@@ -1,0 +1,42 @@
+version: "3"
+services:
+  odoo:
+    image: odoo:13.0
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    networks:
+      -  web
+    ports:
+      - "8069:8069"
+      - "8072:8072"
+    environment:
+      - HOST=postgres
+      - USER=${ODOO_USER}
+      - PASSWORD=${ODOO_PASSWORD}
+    volumes:
+      - odoo_data_volume:/var/lib/odoo
+      - ./odoo/config:/etc/odoo
+      - ./odoo/addons:/mnt/extra-addons
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.port=8069'
+      - 'traefik.http.frontend.rule=Host:${ODOO_DOMAIN}'
+      - 'traefik.longpolling.port=8072'
+      - 'traefik.longpolling.frontend.rule=Host:${ODOO_DOMAIN}/longpolling/poll;PathPrefixStrip:/longpolling/poll'
+  postgres:
+    image: postgres:10
+    restart: unless-stopped
+    networks:
+      -  web
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${ODOO_USER}
+      - POSTGRES_PASSWORD=${ODOO_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data_volume:/var/lib/postgresql/data/pgdata
+
+volumes:
+  odoo_data_volume:
+  postgres_data_volume:
