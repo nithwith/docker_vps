@@ -1,6 +1,7 @@
 version: "3"
 services:
   odoo:
+    container_name: odoo
     image: odoo:13.0
     depends_on:
       - postgres
@@ -25,6 +26,7 @@ services:
       - 'traefik.longpolling.port=8072'
       - 'traefik.longpolling.frontend.rule=Host:${ODOO_DOMAIN}/longpolling/poll;PathPrefixStrip:/longpolling/poll'
   postgres:
+    container_name: postgres
     image: postgres:10
     restart: unless-stopped
     networks:
