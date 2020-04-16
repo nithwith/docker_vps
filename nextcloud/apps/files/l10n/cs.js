@@ -59,6 +59,7 @@ OC.L10N.register(
     "Could not create file \"{file}\"" : "Soubor „{file}“ nelze vytvořit",
     "Could not create file \"{file}\" because it already exists" : "Soubor „{file}“ nelze vytvořit, protože zde už existuje",
     "Could not create folder \"{dir}\" because it already exists" : "Složku „{dir}“ nelze vytvořit, protože už existuje",
+    "Could not fetch file details \"{file}\"" : "Nedaří se získat podrobnosti o souboru „{file}“",
     "Error deleting file \"{fileName}\"." : "Chyba mazání souboru „{fileName}“.",
     "No search results in other folders for {tag}{filter}{endtag}" : "Žádné výsledky hledání v ostatních složkách pro {tag}{filter}{endtag}",
     "Name" : "Název",
@@ -157,6 +158,7 @@ OC.L10N.register(
     "Transfer {path} to {userid}" : "Převést {path} na {userid}",
     "Invalid path selected" : "Vybrán neplatný popis umístění",
     "Ownership transfer request sent" : "Žádost o převedení vlastnictví zaslána",
+    "Cannot transfer ownership of a file or folder you don't own" : "Není možné převést vlastnictví souboru či složky, které nejste vlastníky",
     "Tags" : "Značky",
     "Error while loading the file data" : "Chyba při načítání dat souboru",
     "Unable to change the favourite state of the file" : "Nedaří se změnit stav „oblíbené“ souboru",
@@ -186,6 +188,7 @@ OC.L10N.register(
     "Text file" : "Textový soubor",
     "New text file.txt" : "Nový textový soubor.txt",
     "%s of %s used" : "%s z %s použito",
-    "%1$s%% of %2$s used" : "použito %1$s%% z %2$s"
+    "%1$s%% of %2$s used" : "použito %1$s%% z %2$s",
+    "Cannot transfter ownership of a file or folder you don't own" : "Není možné převést vlastnictví souboru nebo složky, která vám nenáleží"
 },
 "nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;");

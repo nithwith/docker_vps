@@ -1,8 +1,8 @@
 OC.L10N.register(
     "calendar",
     {
-    "Calendar" : "المفكرة",
     "Hello," : "مرحبا %s،",
+    "Calendar" : "المفكرة",
     "Today" : "اليوم",
     "Day" : "يوم",
     "Week" : "أسبوع",
@@ -21,8 +21,6 @@ OC.L10N.register(
     "Email" : "البريد الإلكتروني",
     "Busy" : "مشغول",
     "Unknown" : "مجهول",
-    "from" : "مِن",
-    "to" : "إلى",
     "never" : "بتاتاً",
     "after" : "بعد",
     "Repeat" : "التكرار",

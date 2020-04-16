@@ -59,6 +59,7 @@ OC.L10N.register(
     "Could not create file \"{file}\"" : "Невозможно создать файл «{file}»",
     "Could not create file \"{file}\" because it already exists" : "Невозможно создать файл «{file}», он уже существует",
     "Could not create folder \"{dir}\" because it already exists" : "Невозможно создать каталог «{dir}», он уже существует",
+    "Could not fetch file details \"{file}\"" : "Не удалось получить сведения о файле «{file}»",
     "Error deleting file \"{fileName}\"." : "Ошибка удаления файла «{fileName}».",
     "No search results in other folders for {tag}{filter}{endtag}" : "Нет результатов поиска в других папках для {tag}{filter}{endtag}",
     "Name" : "Имя",
@@ -186,6 +187,7 @@ OC.L10N.register(
     "Text file" : "Текстовый файл",
     "New text file.txt" : "Новый текстовый файл.txt",
     "%s of %s used" : "использовано %s из %s",
-    "%1$s%% of %2$s used" : "использовано %1$s%% из %2$s"
+    "%1$s%% of %2$s used" : "использовано %1$s%% из %2$s",
+    "Cannot transfter ownership of a file or folder you don't own" : "Изменение владельца возможно только для своих файлов и папок"
 },
 "nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);");

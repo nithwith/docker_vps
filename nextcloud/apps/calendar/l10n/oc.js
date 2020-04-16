@@ -1,8 +1,8 @@
 OC.L10N.register(
     "calendar",
     {
-    "Calendar" : "Calendièr",
     "Cheers!" : "A lèu !",
+    "Calendar" : "Calendièr",
     "Today" : "Uèi",
     "Day" : "Jorn",
     "Week" : "Aquesta setmana",
@@ -16,8 +16,6 @@ OC.L10N.register(
     "Automatic" : "Automatic",
     "Email" : "Adreça corrièl",
     "Unknown" : "Desconegut",
-    "from" : "de",
-    "to" : "a",
     "never" : "pas jamai",
     "after" : "aprèp",
     "Repeat" : "Repetir",

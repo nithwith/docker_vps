@@ -1,6 +1,6 @@
 { "translations": {
-    "Calendar" : "Kalenner",
     "Cheers!" : "Prost!",
+    "Calendar" : "Kalenner",
     "Today" : "Haut",
     "Day" : "Dag",
     "Week" : "Woch",
@@ -15,8 +15,6 @@
     "Automatic" : "Automatesch",
     "Email" : "Email",
     "Unknown" : "Onbekannt",
-    "from" : "vun",
-    "to" : "bis",
     "never" : "Ni",
     "after" : "No",
     "Repeat" : "Widderhuelen",

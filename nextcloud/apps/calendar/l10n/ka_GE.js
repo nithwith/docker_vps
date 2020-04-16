@@ -1,12 +1,12 @@
 OC.L10N.register(
     "calendar",
     {
-    "Calendar" : "კალენდარი",
     "%s has published the calendar »%s«" : "%s მომხმარებელმა გამოაქვეყნა კალენდარი »%s«",
     "Hello," : "გამარჯობა,",
     "We wanted to inform you that %s has published the calendar »%s«." : "გვსურს შეგატყობინოთ, რომ %s მომხმარებელმა გამოაქყვენა კალენდარი »%s«.",
     "Open »%s«" : "გახნსნა »%s«",
     "Cheers!" : "წარმატებები!",
+    "Calendar" : "კალენდარი",
     "Today" : "დღეს",
     "Day" : "დღე",
     "Week" : "კვირა",
@@ -26,8 +26,6 @@ OC.L10N.register(
     "Email" : "ელ-ფოსტა",
     "Unknown" : "ამოუცნობი",
     "All day" : "მთელი დღე",
-    "from" : "დან",
-    "to" : "ვის",
     "never" : "არასდროს",
     "after" : "შემდეგ",
     "Repeat" : "გამეორება",

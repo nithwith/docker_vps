@@ -57,6 +57,7 @@
     "Could not create file \"{file}\"" : "Impossibile creare il file \"{file}\"",
     "Could not create file \"{file}\" because it already exists" : "Impossibile creare il file \"{file}\" poiché esiste già",
     "Could not create folder \"{dir}\" because it already exists" : "Impossibile creare la cartella \"{dir}\" poiché esiste già",
+    "Could not fetch file details \"{file}\"" : "Impossibile recuperare i dettagli del file \"{file}\"",
     "Error deleting file \"{fileName}\"." : "Errore durante l'eliminazione del file \"{fileName}\".",
     "No search results in other folders for {tag}{filter}{endtag}" : "Nessun risultato di ricerca nelle altre cartelle per {tag}{filter}{endtag}",
     "Name" : "Nome",
@@ -121,7 +122,7 @@
     "{user} deleted {file}" : "{user} ha eliminato {file}",
     "{user} deleted an encrypted file in {file}" : "{user} ha eliminato un file cifrato in {file}",
     "You restored {file}" : "Hai ripristinato {file}",
-    "{user} restored {file}" : "{user1} ha ripristinato {file}",
+    "{user} restored {file}" : "{user} ha ripristinato {file}",
     "You renamed {oldfile} to {newfile}" : "Hai rinominato {oldfile} in {newfile}",
     "{user} renamed {oldfile} to {newfile}" : "{user} ha rinominato {oldfile} in {newfile}",
     "You moved {oldfile} to {newfile}" : "Hai spostato {oldfile} in {newfile}",
@@ -155,6 +156,7 @@
     "Transfer {path} to {userid}" : "Trasferisci {path} a {userid}",
     "Invalid path selected" : "Percorso selezionato non valido",
     "Ownership transfer request sent" : "Richiesta di trasferimento della proprietà inviata",
+    "Cannot transfer ownership of a file or folder you don't own" : " Impossibile trasferire la proprietà di un file o di una cartella di altri",
     "Tags" : "Etichette",
     "Error while loading the file data" : "Errore durante il caricamento del file di dati",
     "Unable to change the favourite state of the file" : "Impossibile cambiare lo stato di preferito del file",
@@ -184,6 +186,7 @@
     "Text file" : "File di testo",
     "New text file.txt" : "Nuovo file di testo.txt",
     "%s of %s used" : "%s di %s utilizzati",
-    "%1$s%% of %2$s used" : "%1$s%% di %2$s utilizzati"
+    "%1$s%% of %2$s used" : "%1$s%% di %2$s utilizzati",
+    "Cannot transfter ownership of a file or folder you don't own" : " Impossibile trasferire la proprietà di un file o di una cartella di altri"
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

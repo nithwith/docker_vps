@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[39],{521:function(e,t,n){e.exports=function(){"use strict";return{code:"ko",buttonText:{prev:"이전달",next:"다음달",today:"오늘",month:"월",week:"주",day:"일",list:"일정목록"},weekLabel:"주",allDayText:"종일",eventLimitText:"개",noEventsMessage:"일정이 없습니다"}}()}}]);
+//# sourceMappingURL=calendar.39.428e78c74f463b1dce42.js.map

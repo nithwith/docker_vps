@@ -1,8 +1,8 @@
 OC.L10N.register(
     "calendar",
     {
-    "Calendar" : "Təqvim",
     "Cheers!" : "Şərəfə!",
+    "Calendar" : "Təqvim",
     "Today" : "Bu gün",
     "Day" : "Gün",
     "Week" : "Həftə",
@@ -15,8 +15,6 @@ OC.L10N.register(
     "Cancel" : "Dayandır",
     "Automatic" : "Avtomatik",
     "Email" : "Email",
-    "from" : "ondan",
-    "to" : "doğru",
     "never" : "heç vaxt",
     "Repeat" : "Təkrar",
     "Monday" : "Bazar ertəsi",

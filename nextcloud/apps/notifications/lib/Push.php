@@ -92,7 +92,7 @@ class Push {
 		$userKey = $this->keyManager->getKey($user);
 
 		$isTalkNotification = \in_array($notification->getApp(), ['spreed', 'talk'], true);
-		$talkApps = array_filter($devices, function($device) {
+		$talkApps = array_filter($devices, function ($device) {
 			return $device['apptype'] === 'talk';
 		});
 		$hasTalkApps = !empty($talkApps);
@@ -131,43 +131,7 @@ class Push {
 			}
 		}
 
-		if (empty($pushNotifications)) {
-			return;
-		}
-
-		$client = $this->clientService->newClient();
-		foreach ($pushNotifications as $proxyServer => $notifications) {
-			try {
-				$response = $client->post($proxyServer . '/notifications', [
-					'body' => [
-						'notifications' => $notifications,
-					],
-				]);
-			} catch (\Exception $e) {
-				$this->log->logException($e, [
-					'app' => 'notifications',
-					'level' => $e->getCode() === Http::STATUS_BAD_REQUEST ? ILogger::INFO : ILogger::WARN,
-				]);
-				continue;
-			}
-
-			$status = $response->getStatusCode();
-			if ($status !== Http::STATUS_OK && $status !== Http::STATUS_SERVICE_UNAVAILABLE) {
-				$body = $response->getBody();
-				$this->log->error('Could not send notification to push server [{url}]: {error}',[
-					'error' => \is_string($body) ? $body : 'no reason given',
-					'url' => $proxyServer,
-					'app' => 'notifications',
-				]);
-			} else if ($status === Http::STATUS_SERVICE_UNAVAILABLE && $this->config->getSystemValue('debug', false)) {
-				$body = $response->getBody();
-				$this->log->debug('Could not send notification to push server [{url}]: {error}',[
-					'error' => \is_string($body) ? $body : 'no reason given',
-					'url' => $proxyServer,
-					'app' => 'notifications',
-				]);
-			}
-		}
+		$this->sendNotificationsToProxies($pushNotifications);
 	}
 
 	public function pushDeleteToDevice(string $userId, int $notificationId): void {
@@ -201,6 +165,10 @@ class Push {
 			}
 		}
 
+		$this->sendNotificationsToProxies($pushNotifications);
+	}
+
+	protected function sendNotificationsToProxies(array $pushNotifications): void {
 		if (empty($pushNotifications)) {
 			return;
 		}
@@ -222,20 +190,30 @@ class Push {
 			}
 
 			$status = $response->getStatusCode();
-			if ($status !== Http::STATUS_OK && $status !== Http::STATUS_SERVICE_UNAVAILABLE) {
-				$body = $response->getBody();
-				$this->log->error('Could not send notification to push server [{url}]: {error}',[
-					'error' => \is_string($body) ? $body : 'no reason given',
-					'url' => $proxyServer,
-					'app' => 'notifications',
-				]);
-			} else if ($status === Http::STATUS_SERVICE_UNAVAILABLE && $this->config->getSystemValue('debug', false)) {
+			if ($status === Http::STATUS_SERVICE_UNAVAILABLE && $this->config->getSystemValue('debug', false)) {
 				$body = $response->getBody();
 				$this->log->debug('Could not send notification to push server [{url}]: {error}',[
 					'error' => \is_string($body) ? $body : 'no reason given',
 					'url' => $proxyServer,
 					'app' => 'notifications',
 				]);
+				continue;
+			}
+
+			$body = $response->getBody();
+			$bodyData = json_decode($body, true);
+			if ($status !== Http::STATUS_OK) {
+				$this->log->error('Could not send notification to push server [{url}]: {error}',[
+					'error' => \is_string($body) && $bodyData === null ? $body : 'no reason given',
+					'url' => $proxyServer,
+					'app' => 'notifications',
+				]);
+			}
+
+			if (is_array($bodyData) && !empty($bodyData['unknown']) && is_array($bodyData['unknown'])) {
+				foreach ($bodyData['unknown'] as $unknownDevice) {
+					$this->deletePushTokenByDeviceIdentifier($unknownDevice);
+				}
 			}
 		}
 	}
@@ -262,14 +240,12 @@ class Push {
 			'id' => $notification->getObjectId(),
 		];
 
-		// Max length of encryption is 255, so we need to shorten the subject to be shorter
-		$subject = $notification->getParsedSubject();
-		// Half the length for multibyte characters like Russian, Chinese, Japanese, Emojis, …
-		$dataLength = floor((245 - strlen(json_encode($data))) / 2) - 1;
-		if (strlen($subject) > $dataLength) {
-			$data['subject'] = mb_substr($subject, 0, $dataLength) . '…';
-		} else {
-			$data['subject'] = $subject;
+		// Max length of encryption is 255, so we need to make sure the subject is shorter.
+		// We also substract a buffer of 10 bytes.
+		$maxDataLength = 255 - strlen(json_encode($data)) - 10;
+		$data['subject'] = $this->shortenJsonEncodedMultibyte($notification->getParsedSubject(), $maxDataLength);
+		if ($notification->getParsedSubject() !== $data['subject']) {
+			$data['subject'] .= '…';
 		}
 
 		if ($isTalkNotification) {
@@ -297,6 +273,27 @@ class Push {
 			'priority' => $priority,
 			'type' => $type,
 		];
+	}
+
+	/**
+	 * json_encode is messing with multibyte characters a lot,
+	 * replacing them with something along "\u1234".
+	 * The data length in our encryption is a hard limit, but we don't want to
+	 * make non-utf8 subjects unnecessary short. So this function tries to cut
+	 * it off first.
+	 * If that is not enough it always cuts off 5 characters in multibyte-safe
+	 * fashion until the json_encode-d string is shorter then the given limit.
+	 *
+	 * @param string $subject
+	 * @param int $dataLength
+	 * @return string
+	 */
+	protected function shortenJsonEncodedMultibyte(string $subject, int $dataLength): string {
+		$temp = mb_substr($subject, 0, $dataLength);
+		while (strlen(json_encode($temp)) > $dataLength) {
+			$temp = mb_substr($temp, 0, -5);
+		}
+		return $temp;
 	}
 
 	/**
@@ -366,6 +363,18 @@ class Push {
 		$query = $this->db->getQueryBuilder();
 		$query->delete('notifications_pushtokens')
 			->where($query->expr()->eq('token', $query->createNamedParameter($tokenId, IQueryBuilder::PARAM_INT)));
+
+		return $query->execute() !== 0;
+	}
+
+	/**
+	 * @param string $deviceIdentifier
+	 * @return bool
+	 */
+	protected function deletePushTokenByDeviceIdentifier(string $deviceIdentifier): bool {
+		$query = $this->db->getQueryBuilder();
+		$query->delete('notifications_pushtokens')
+			->where($query->expr()->eq('deviceidentifier', $query->createNamedParameter($deviceIdentifier)));
 
 		return $query->execute() !== 0;
 	}

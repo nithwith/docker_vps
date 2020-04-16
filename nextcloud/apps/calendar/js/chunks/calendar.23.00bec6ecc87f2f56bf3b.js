@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[23],{505:function(e,t,n){e.exports=function(){"use strict";return{code:"fa",week:{dow:6,doy:12},dir:"rtl",buttonText:{prev:"قبلی",next:"بعدی",today:"امروز",month:"ماه",week:"هفته",day:"روز",list:"برنامه"},weekLabel:"هف",allDayText:"تمام روز",eventLimitText:function(e){return"بیش از "+e},noEventsMessage:"هیچ رویدادی به نمایش"}}()}}]);
+//# sourceMappingURL=calendar.23.00bec6ecc87f2f56bf3b.js.map

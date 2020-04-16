@@ -1,7 +1,6 @@
 OC.L10N.register(
     "calendar",
     {
-    "Calendar" : "Dagatal",
     "User-Session unexpectedly expired" : "Setu notanda lauk óvænt",
     "Provided email-address is not valid" : "Uppgefið tölvupóstfang er ekki gilt",
     "%s has published the calendar »%s«" : "%s gaf út dagatalið »%s«",
@@ -11,6 +10,7 @@ OC.L10N.register(
     "We wanted to inform you that %s has published the calendar »%s«." : "Við vildum láta þig vita að %s gaf út dagatalið »%s«.",
     "Open »%s«" : "Opna »%s«",
     "Cheers!" : "Til hamingju!",
+    "Calendar" : "Dagatal",
     "A Calendar app for Nextcloud" : "Dagatalsforrit fyrir Nextcloud",
     "Previous day" : "Fyrri dagur",
     "Previous week" : "Fyrri vika",
@@ -119,8 +119,6 @@ OC.L10N.register(
     "(organizer)" : "(skipuleggjandi)",
     "Event title" : "Titill atburðar",
     "All day" : "Heilsdagsviðburður",
-    "from" : "frá",
-    "to" : "til",
     "Select to end repeat" : "Veldu til að hætta endurtekningu",
     "never" : "aldrei",
     "on date" : "þann",
@@ -221,6 +219,7 @@ OC.L10N.register(
     "Brainstorm" : "Hugarflug",
     "Baseball" : "Hornabolti",
     "Meet" : "Hittast",
+    "Review" : "Yfirfara",
     "Office" : "Skrifstofa",
     "Party" : "Partý",
     "Celebration" : "Hátíðahöld",

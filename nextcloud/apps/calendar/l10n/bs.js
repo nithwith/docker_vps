@@ -1,8 +1,8 @@
 OC.L10N.register(
     "calendar",
     {
-    "Calendar" : "Kalendar",
     "Cheers!" : "Cheers!",
+    "Calendar" : "Kalendar",
     "Today" : "Danas",
     "Day" : "Dan",
     "Week" : "Sedmica",
@@ -16,8 +16,6 @@ OC.L10N.register(
     "Email" : "E-pošta",
     "Busy" : "Zauzet",
     "Unknown" : "Nepoznato",
-    "from" : "od",
-    "to" : "do",
     "never" : "nikad",
     "Repeat" : "Ponovi",
     "Monday" : "Ponedjeljak",

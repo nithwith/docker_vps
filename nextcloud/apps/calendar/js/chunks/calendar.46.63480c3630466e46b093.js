@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[46],{528:function(e,n,a){e.exports=function(){"use strict";return{code:"nl",week:{dow:1,doy:4},buttonText:{prev:"Voorgaand",next:"Volgende",today:"Vandaag",year:"Jaar",month:"Maand",week:"Week",day:"Dag",list:"Agenda"},allDayText:"Hele dag",eventLimitText:"extra",noEventsMessage:"Geen evenementen om te laten zien"}}()}}]);
+//# sourceMappingURL=calendar.46.63480c3630466e46b093.js.map

@@ -1,11 +1,11 @@
 OC.L10N.register(
     "calendar",
     {
-    "Calendar" : "Calendariu",
     "Hello," : "Hola,",
     "We wanted to inform you that %s has published the calendar »%s«." : "Quiximos informate de que %s espublizó'l calendariu «%s»",
     "Open »%s«" : "Abrir «%s»",
     "Cheers!" : "¡Salú!",
+    "Calendar" : "Calendariu",
     "Today" : "Güei",
     "Day" : "Día",
     "Week" : "Selmana",
@@ -25,8 +25,6 @@ OC.L10N.register(
     "Email" : "email",
     "Unknown" : "Desconozse",
     "All day" : "Tol día",
-    "from" : "Dende",
-    "to" : "hasta",
     "never" : "enxamás",
     "after" : "dempués",
     "Repeat" : "Repitir",

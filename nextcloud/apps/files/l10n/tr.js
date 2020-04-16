@@ -59,6 +59,7 @@ OC.L10N.register(
     "Could not create file \"{file}\"" : "\"{file}\" dosyası oluşturulamadı",
     "Could not create file \"{file}\" because it already exists" : "\"{file}\" dosyası zaten var olduğundan oluşturulamadı",
     "Could not create folder \"{dir}\" because it already exists" : "\"{dir}\" klasörü zaten var olduğundan oluşturulamadı",
+    "Could not fetch file details \"{file}\"" : "\"{file}\" dosyasının ayrıntıları alınamadı",
     "Error deleting file \"{fileName}\"." : "\"{fileName}\" dosyası silinirken sorun çıktı.",
     "No search results in other folders for {tag}{filter}{endtag}" : "{tag}{filter}{endtag} için diğer klasörlerde herhangi bir arama sonucu yok",
     "Name" : "Ad",
@@ -186,6 +187,7 @@ OC.L10N.register(
     "Text file" : "Metin dosyası",
     "New text file.txt" : "Yeni metin dosyası.txt",
     "%s of %s used" : "%s / %s kullanılıyor",
-    "%1$s%% of %2$s used" : "%1$s%% / %2$s kullanılmış"
+    "%1$s%% of %2$s used" : "%1$s%% / %2$s kullanılmış",
+    "Cannot transfter ownership of a file or folder you don't own" : "Sahibi olmadığınız bir dosya ya da klasörün sahipliğini aktaramazsınız"
 },
 "nplurals=2; plural=(n > 1);");

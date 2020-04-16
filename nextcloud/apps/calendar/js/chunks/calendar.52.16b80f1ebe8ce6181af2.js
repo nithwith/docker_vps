@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[52],{534:function(e,t,n){e.exports=function(){"use strict";return{code:"ru",week:{dow:1,doy:4},buttonText:{prev:"Пред",next:"След",today:"Сегодня",month:"Месяц",week:"Неделя",day:"День",list:"Повестка дня"},weekLabel:"Нед",allDayText:"Весь день",eventLimitText:function(e){return"+ ещё "+e},noEventsMessage:"Нет событий для отображения"}}()}}]);
+//# sourceMappingURL=calendar.52.16b80f1ebe8ce6181af2.js.map

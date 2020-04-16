@@ -1,6 +1,6 @@
 { "translations": {
-    "Calendar" : "Kalendar",
     "Cheers!" : "Cheers!",
+    "Calendar" : "Kalendar",
     "Today" : "Danas",
     "Day" : "Dan",
     "Week" : "Sedmica",
@@ -14,8 +14,6 @@
     "Email" : "E-pošta",
     "Busy" : "Zauzet",
     "Unknown" : "Nepoznato",
-    "from" : "od",
-    "to" : "do",
     "never" : "nikad",
     "Repeat" : "Ponovi",
     "Monday" : "Ponedjeljak",

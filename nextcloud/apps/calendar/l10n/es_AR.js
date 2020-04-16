@@ -1,10 +1,10 @@
 OC.L10N.register(
     "calendar",
     {
-    "Calendar" : "Calendario",
     "Hello," : "Hola,",
     "Open »%s«" : "Abrir »%s«",
     "Cheers!" : "¡Saludos!",
+    "Calendar" : "Calendario",
     "A Calendar app for Nextcloud" : "Una aplicación de calendario para Nextcloud",
     "Today" : "Hoy",
     "Day" : "Día",
@@ -26,8 +26,6 @@ OC.L10N.register(
     "Email" : "Correo electrónico",
     "Unknown" : "Desconocido",
     "All day" : "Todo el día",
-    "from" : "de",
-    "to" : "para",
     "never" : "nunca",
     "after" : "después",
     "Repeat" : "Repetir",

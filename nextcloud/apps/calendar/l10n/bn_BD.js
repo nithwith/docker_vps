@@ -1,8 +1,8 @@
 OC.L10N.register(
     "calendar",
     {
-    "Calendar" : "দিনপঞ্জী",
     "Cheers!" : "শুভেচ্ছা!",
+    "Calendar" : "দিনপঞ্জী",
     "Today" : "আজ",
     "Day" : "দিবস",
     "Week" : "সপ্তাহ",
@@ -16,8 +16,6 @@ OC.L10N.register(
     "Automatic" : "স্বয়ংক্রিয়",
     "Email" : "ইমেইল",
     "Unknown" : "অজানা",
-    "from" : "হইতে",
-    "to" : "প্রতি",
     "never" : "কখনোই নয়",
     "Repeat" : "পূনঃসংঘটন",
     "Monday" : "সোমবার",

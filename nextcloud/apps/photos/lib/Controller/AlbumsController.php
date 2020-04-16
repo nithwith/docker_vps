@@ -34,6 +34,7 @@ use OCP\Files\Folder;
 use OCP\Files\IRootFolder;
 use OCP\FIles\Node;
 use OCP\Files\NotFoundException;
+use OCP\Files\StorageNotAvailableException;
 use OCP\IRequest;
 
 class AlbumsController extends Controller {
@@ -115,8 +116,8 @@ class AlbumsController extends Controller {
 		yield $folder;
 
 		foreach ($nodes as $node) {
-			if ($node instanceof Folder) {
-				yield from $this->scanFolder($node, 0, $shared);
+			if ($node instanceof Folder && $this->scanFolder($node, 0, $shared)) {
+				yield $node;
 			} elseif ($node instanceof File) {
 				if ($this->validFile($node, $shared)) {
 					yield $node;
@@ -137,31 +138,38 @@ class AlbumsController extends Controller {
 		return $node->getStorage()->instanceOfStorage(SharedStorage::class);
 	}
 
-	private function scanFolder(Folder $folder, int $depth, bool $shared): iterable {
+	private function scanFolder(Folder $folder, int $depth, bool $shared): bool {
 		if ($depth > 4) {
-			return [];
+			return false;
 		}
 
-		// Ignore folder with a .noimage or .nomedia node
-		if ($folder->nodeExists('.noimage') || $folder->nodeExists('.nomedia')) {
-			return [];
-		}
+		try {
+			// Ignore folder with a .noimage or .nomedia node
+			if ($folder->nodeExists('.noimage') || $folder->nodeExists('.nomedia')) {
+				return false;
+			}
 
-		$nodes = $folder->getDirectoryListing();
+			$nodes = $folder->getDirectoryListing();
+		} catch (StorageNotAvailableException $e) {
+			return false;
+		}
 
 		foreach ($nodes as $node) {
 			if ($node instanceof File) {
 				if ($this->validFile($node, $shared)) {
-					yield $folder;
-					return [];
+					return true;
 				}
 			}
 		}
 
 		foreach ($nodes as $node) {
 			if ($node instanceof Folder && $this->isShared($node) === $shared) {
-				yield from $this->scanFolder($node, $depth + 1, $shared);
+				if ($this->scanFolder($node, $depth + 1, $shared)) {
+					return true;
+				}
 			}
 		}
+
+		return false;
 	}
 }

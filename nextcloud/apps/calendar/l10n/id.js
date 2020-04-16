@@ -1,12 +1,12 @@
 OC.L10N.register(
     "calendar",
     {
-    "Calendar" : "Kalender",
     "%s has published the calendar »%s«" : "%s telah mempublikasikan kalender »%s«",
     "Hello," : "Helo %s,",
     "We wanted to inform you that %s has published the calendar »%s«." : "Kami ingin menginformasikan anda bahwa %s telah mempublikasikan kalender »%s«.",
     "Open »%s«" : "Buka »%s«",
     "Cheers!" : "Horee!",
+    "Calendar" : "Kalender",
     "Today" : "Hari Ini",
     "Day" : "Hari",
     "Week" : "Minggu",
@@ -22,8 +22,6 @@ OC.L10N.register(
     "Automatic" : "Otomatis",
     "Email" : "Surel",
     "Unknown" : "Tidak diketahui",
-    "from" : "dari",
-    "to" : "untuk",
     "never" : "tidak pernah",
     "Repeat" : "Ulangi",
     "Monday" : "Senin",
@@ -43,6 +41,7 @@ OC.L10N.register(
     "Description" : "Deskrisi",
     "Cancelled" : "Dibatalkan",
     "Categories" : "Kategori",
+    "Review" : "Tinjauan",
     "Mail" : "Email",
     "Play" : "Putar"
 },

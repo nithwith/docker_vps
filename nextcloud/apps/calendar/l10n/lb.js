@@ -1,8 +1,8 @@
 OC.L10N.register(
     "calendar",
     {
-    "Calendar" : "Kalenner",
     "Cheers!" : "Prost!",
+    "Calendar" : "Kalenner",
     "Today" : "Haut",
     "Day" : "Dag",
     "Week" : "Woch",
@@ -17,8 +17,6 @@ OC.L10N.register(
     "Automatic" : "Automatesch",
     "Email" : "Email",
     "Unknown" : "Onbekannt",
-    "from" : "vun",
-    "to" : "bis",
     "never" : "Ni",
     "after" : "No",
     "Repeat" : "Widderhuelen",

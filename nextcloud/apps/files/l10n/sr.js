@@ -59,6 +59,7 @@ OC.L10N.register(
     "Could not create file \"{file}\"" : "Не могу да направим фајл \"{file}\"",
     "Could not create file \"{file}\" because it already exists" : "Не могу да направим фајл \"{file}\" јер већ постоји",
     "Could not create folder \"{dir}\" because it already exists" : "Не могу да направим фасциклу \"{dir}\" јер већ постоји",
+    "Could not fetch file details \"{file}\"" : "Не могу да дохватим детаље за „{file}”",
     "Error deleting file \"{fileName}\"." : "Грешка при брисању фајла \"{fileName}\".",
     "No search results in other folders for {tag}{filter}{endtag}" : "Нема резултата претраге у осталим фасциклама за {tag}{filter}{endtag}",
     "Name" : "Назив",
@@ -186,6 +187,7 @@ OC.L10N.register(
     "Text file" : "Tекстуални фајл",
     "New text file.txt" : "Нов текстуални фајл.txt",
     "%s of %s used" : "%s од %s искоришћено",
-    "%1$s%% of %2$s used" : "%1$s%% од %2$s искоришћено"
+    "%1$s%% of %2$s used" : "%1$s%% од %2$s искоришћено",
+    "Cannot transfter ownership of a file or folder you don't own" : "Не можете пренети власништво фајла или фасцикле које нису Ваше"
 },
 "nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");

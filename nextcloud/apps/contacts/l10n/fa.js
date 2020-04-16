@@ -12,6 +12,7 @@ OC.L10N.register(
     "Delete" : "حذف",
     "Groups" : "گروه ها",
     "New contact" : "مخاطب جدید",
+    "Select Date" : "تاریخ را انتخاب کنید",
     "No results" : "نتیجه ای یافت نشد",
     "Last modified" : "آخرین اصلاح شده",
     "Rename" : "تغییرنام",
@@ -21,8 +22,6 @@ OC.L10N.register(
     "Share with users or groups" : "اشتراک گذاری با کاربران یا گروه ها ...",
     "No users or groups" : "هیچ کاربر یا گروهی وجود ندارد",
     "can edit" : "توانایی ویرایش",
-    "Importing into" : "در حال وارد کردن به",
-    "Import into" : "وارد کردن به",
     "Address book name" : "نام دفترچه آدرس",
     "First name" : "نام",
     "Last name" : "نام‌خانوادگی",
@@ -77,6 +76,7 @@ OC.L10N.register(
     "Female" : "مؤنث",
     "Male" : "مذکر",
     "None" : "هیچ‌کدام",
-    "Unknown" : "نامشخص"
+    "Unknown" : "نامشخص",
+    "An error occurred" : "خطایی روی داد"
 },
 "nplurals=2; plural=(n > 1);");

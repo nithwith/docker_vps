@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{490:function(n,e,t){n.exports=function(){"use strict";return{code:"az",week:{dow:1,doy:4},buttonText:{prev:"Əvvəl",next:"Sonra",today:"Bu Gün",month:"Ay",week:"Həftə",day:"Gün",list:"Gündəm"},weekLabel:"Həftə",allDayText:"Bütün Gün",eventLimitText:function(n){return"+ daha çox "+n},noEventsMessage:"Göstərmək üçün hadisə yoxdur"}}()}}]);
+//# sourceMappingURL=calendar.8.a992ba79034afff833df.js.map

@@ -59,6 +59,7 @@ OC.L10N.register(
     "Could not create file \"{file}\"" : "Kunde inte skapa fil \"{fileName}\"",
     "Could not create file \"{file}\" because it already exists" : "Kunde inte skapa fil \"{file}\" därför att den redan existerar",
     "Could not create folder \"{dir}\" because it already exists" : "Kunde inte skapa \"{dir}\" därför att den redan existerar",
+    "Could not fetch file details \"{file}\"" : "Kunde inte hämta filinformation \"{file}\"",
     "Error deleting file \"{fileName}\"." : "Fel när \"{fileName}\" skulle raderas.",
     "No search results in other folders for {tag}{filter}{endtag}" : "Inga sökresultat i andra mappar för {tag}{filter}{endtag}",
     "Name" : "Namn",
@@ -157,6 +158,7 @@ OC.L10N.register(
     "Transfer {path} to {userid}" : "Överför {path} till {userid}",
     "Invalid path selected" : "Ogiltig sökväg vald",
     "Ownership transfer request sent" : "Förfrågan om ägaröverföring skickad",
+    "Cannot transfer ownership of a file or folder you don't own" : "Det går inte att överföra ägarskap till en fil eller mapp som du inte äger",
     "Tags" : "Taggar",
     "Error while loading the file data" : "Fel vid inläsning av filens data",
     "Unable to change the favourite state of the file" : "Kan inte ändra filens favoritstatus",
@@ -186,6 +188,7 @@ OC.L10N.register(
     "Text file" : "Textfil",
     "New text file.txt" : "Ny textfil.txt",
     "%s of %s used" : "%s av %s använt",
-    "%1$s%% of %2$s used" : "%1$s%% av %2$s använt"
+    "%1$s%% of %2$s used" : "%1$s%% av %2$s använt",
+    "Cannot transfter ownership of a file or folder you don't own" : "Det går inte att överföra ägarskap till en fil eller mapp som du inte äger"
 },
 "nplurals=2; plural=(n != 1);");

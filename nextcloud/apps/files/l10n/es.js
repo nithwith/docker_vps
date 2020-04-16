@@ -59,6 +59,7 @@ OC.L10N.register(
     "Could not create file \"{file}\"" : "No se pudo crear archivo \"{file}\"",
     "Could not create file \"{file}\" because it already exists" : "No se pudo crear archivo \"{file}\" porque ya existe",
     "Could not create folder \"{dir}\" because it already exists" : "No se ha podido crear la carpeta \"{dir}\" porque ya existe",
+    "Could not fetch file details \"{file}\"" : "No se pudieron obtener los detalles de \"{file}\"",
     "Error deleting file \"{fileName}\"." : "Error al borrar el archivo \"{fileName}\".",
     "No search results in other folders for {tag}{filter}{endtag}" : "No hay resultados de búsqueda en otras carpetas para  {tag}{filter}{endtag}",
     "Name" : "Nombre",
@@ -157,6 +158,7 @@ OC.L10N.register(
     "Transfer {path} to {userid}" : "Transferir {path} a {userid}",
     "Invalid path selected" : "Ruta de archivo seleccionada no válida.",
     "Ownership transfer request sent" : "Enviada la solicitud de transferencia de propiedad",
+    "Cannot transfer ownership of a file or folder you don't own" : "No se puede transferir la propiedad de un archivo o carpeta que no te pertenece",
     "Tags" : "Etiquetas",
     "Error while loading the file data" : "Error al cargar los datos del archivo",
     "Unable to change the favourite state of the file" : "No se ha podido cambiar el estado de favorito del fichero",
@@ -186,6 +188,7 @@ OC.L10N.register(
     "Text file" : "Archivo de texto",
     "New text file.txt" : "Nuevo archivo.txt",
     "%s of %s used" : "%s de %s usado",
-    "%1$s%% of %2$s used" : "%1$s %% de %2$s usados"
+    "%1$s%% of %2$s used" : "%1$s %% de %2$s usados",
+    "Cannot transfter ownership of a file or folder you don't own" : "No se puede transferir la propiedad de un archivo o carpeta que no te pertenece"
 },
 "nplurals=2; plural=(n != 1);");

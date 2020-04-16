@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[63],{545:function(n,t,e){n.exports=function(){"use strict";return{code:"uz",buttonText:{month:"Oy",week:"Xafta",day:"Kun",list:"Kun tartibi"},allDayText:"Kun bo'yi",eventLimitText:function(n){return"+ yana "+n},noEventsMessage:"Ko'rsatish uchun voqealar yo'q"}}()}}]);
+//# sourceMappingURL=calendar.63.d901099ef742b5be2c93.js.map

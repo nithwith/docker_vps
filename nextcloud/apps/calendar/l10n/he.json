@@ -1,8 +1,8 @@
 { "translations": {
-    "Calendar" : "יומן",
     "Hello," : "שלום,",
     "Open »%s«" : "פתיחת „%s”",
     "Cheers!" : "ברכותינו!",
+    "Calendar" : "יומן",
     "A Calendar app for Nextcloud" : "יישומון לוח שנה ל־Nextcloud",
     "Today" : "היום",
     "Day" : "יום",
@@ -27,8 +27,6 @@
     "Email" : "דוא״ל",
     "Unknown" : "לא ידוע",
     "All day" : "כל היום",
-    "from" : "מאת",
-    "to" : "אל",
     "never" : "לעולם לא",
     "after" : "לאחר",
     "Repeat" : "חזרה",

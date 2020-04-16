@@ -69,8 +69,8 @@ Options -Indexes
 </IfModule>
 #### DO NOT CHANGE ANYTHING ABOVE THIS LINE ####
 
-ErrorDocument 403 /
-ErrorDocument 404 /
+ErrorDocument 403 //
+ErrorDocument 404 //
 <IfModule mod_rewrite.c>
   Options -MultiViews
   RewriteRule ^core/js/oc.js$ index.php [PT,E=PATH_INFO:$1]

@@ -108,7 +108,6 @@ class SubscriptionAdapter implements ISubscription, ISupportedApps {
 			'firstrunwizard',
 			'fulltextsearch',
 			'fulltextsearch_elasticsearch',
-			'gallery',
 			'logreader',
 			'lookup_server_connector',
 			'nextcloud_announcements',
@@ -150,6 +149,12 @@ class SubscriptionAdapter implements ISubscription, ISupportedApps {
 		}
 		if ($nextcloudVersion  < 17) {
 			$filesSubscription[] = 'files_texteditor';
+		}
+		if ($nextcloudVersion  < 18) {
+			$filesSubscription[] = 'gallery';
+		}		
+		if ($nextcloudVersion >= 18) {
+			$filesSubscription[] = 'photos';
 		}
 
 		$supportedApps = [];

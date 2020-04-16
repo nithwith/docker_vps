@@ -1,12 +1,12 @@
 OC.L10N.register(
     "calendar",
     {
-    "Calendar" : "Kalendaro",
     "%s has published the calendar »%s«" : "%s publikigis la kalendaron „%s“",
     "Hello," : "Saluton,",
     "We wanted to inform you that %s has published the calendar »%s«." : "Ni volis sciigi vin, ke %s publikigis la kalendaron „%s“.",
     "Open »%s«" : "Malfermi „%s“",
     "Cheers!" : "Ĝis!",
+    "Calendar" : "Kalendaro",
     "A Calendar app for Nextcloud" : "Aplikaĵo pri kalendaro por Nextcloud",
     "Today" : "Hodiaŭ",
     "Day" : "Tago",
@@ -32,8 +32,6 @@ OC.L10N.register(
     "Busy" : "Okupita",
     "Unknown" : "Nekonata",
     "All day" : "Tuttage",
-    "from" : "de",
-    "to" : "ĝis",
     "never" : "neniam",
     "after" : "post",
     "Repeat" : "Ripeti",
