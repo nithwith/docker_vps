@@ -118,6 +118,7 @@ OC.MimeTypeList={
     "image",
     "link",
     "location",
+    "mindmap",
     "package-x-generic",
     "text",
     "text-calendar",

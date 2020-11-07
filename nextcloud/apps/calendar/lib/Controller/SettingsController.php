@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * Calendar App
@@ -86,6 +87,8 @@ class SettingsController extends Controller {
 				return $this->setEventLimit($value);
 			case 'slotDuration':
 				return $this->setSlotDuration($value);
+			case 'showTasks':
+				return $this->setShowTasks($value);
 			default:
 				return new JSONResponse([], Http::STATUS_BAD_REQUEST);
 		}
@@ -110,7 +113,7 @@ class SettingsController extends Controller {
 				'currentView',
 				$view
 			);
-		} catch(\Exception $e) {
+		} catch (\Exception $e) {
 			return new JSONResponse([], Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
 
@@ -135,7 +138,32 @@ class SettingsController extends Controller {
 				'skipPopover',
 				$value
 			);
-		} catch(\Exception $e) {
+		} catch (\Exception $e) {
+			return new JSONResponse([], Http::STATUS_INTERNAL_SERVER_ERROR);
+		}
+
+		return new JSONResponse();
+	}
+
+	/**
+	 * set config value for showing tasks
+	 *
+	 * @param $value User-selected option whether or not to show tasks
+	 * @return JSONResponse
+	 */
+	private function setShowTasks(string $value):JSONResponse {
+		if (!\in_array($value, ['yes', 'no'])) {
+			return new JSONResponse([], Http::STATUS_UNPROCESSABLE_ENTITY);
+		}
+
+		try {
+			$this->config->setUserValue(
+				$this->userId,
+				$this->appName,
+				'showTasks',
+				$value
+			);
+		} catch (\Exception $e) {
 			return new JSONResponse([], Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
 
@@ -160,7 +188,7 @@ class SettingsController extends Controller {
 				'showWeekends',
 				$value
 			);
-		} catch(\Exception $e) {
+		} catch (\Exception $e) {
 			return new JSONResponse([], Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
 
@@ -185,7 +213,7 @@ class SettingsController extends Controller {
 				'showWeekNr',
 				$value
 			);
-		} catch(\Exception $e) {
+		} catch (\Exception $e) {
 			return new JSONResponse([], Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
 
@@ -205,7 +233,7 @@ class SettingsController extends Controller {
 				'firstRun',
 				'no'
 			);
-		} catch(\Exception $e) {
+		} catch (\Exception $e) {
 			return new JSONResponse([], Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
 
@@ -226,7 +254,7 @@ class SettingsController extends Controller {
 				'timezone',
 				$value
 			);
-		} catch(\Exception $e) {
+		} catch (\Exception $e) {
 			return new JSONResponse([], Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
 
@@ -251,7 +279,7 @@ class SettingsController extends Controller {
 				'eventLimit',
 				$value
 			);
-		} catch(\Exception $e) {
+		} catch (\Exception $e) {
 			return new JSONResponse([], Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
 
@@ -276,7 +304,7 @@ class SettingsController extends Controller {
 				'slotDuration',
 				$value
 			);
-		} catch(\Exception $e) {
+		} catch (\Exception $e) {
 			return new JSONResponse([], Http::STATUS_INTERNAL_SERVER_ERROR);
 		}
 

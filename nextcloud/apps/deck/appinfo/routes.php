@@ -26,9 +26,6 @@ return [
 	'routes' => [
 		['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
 
-		['name' => 'Config#get', 'url' => '/config', 'verb' => 'GET'],
-		['name' => 'Config#setValue', 'url' => '/config/{key}', 'verb' => 'POST'],
-
 		// boards
 		['name' => 'board#index', 'url' => '/boards', 'verb' => 'GET'],
 		['name' => 'board#create', 'url' => '/boards', 'verb' => 'POST'],
@@ -38,8 +35,9 @@ return [
 		['name' => 'board#deleteUndo', 'url' => '/boards/{boardId}/deleteUndo', 'verb' => 'POST'],
 		['name' => 'board#getUserPermissions', 'url' => '/boards/{boardId}/permissions', 'verb' => 'GET'],
 		['name' => 'board#addAcl', 'url' => '/boards/{boardId}/acl', 'verb' => 'POST'],
-		['name' => 'board#updateAcl', 'url' => '/boards/{boardId}/acl', 'verb' => 'PUT'],
+		['name' => 'board#updateAcl', 'url' => '/boards/{boardId}/acl/{aclId}', 'verb' => 'PUT'],
 		['name' => 'board#deleteAcl', 'url' => '/boards/{boardId}/acl/{aclId}', 'verb' => 'DELETE'],
+		['name' => 'board#clone', 'url' => '/boards/{boardId}/clone', 'verb' => 'POST'],
 
 		// stacks
 		['name' => 'stack#index', 'url' => '/stacks/{boardId}', 'verb' => 'GET'],
@@ -63,8 +61,9 @@ return [
 		['name' => 'card#assignLabel', 'url' => '/cards/{cardId}/label/{labelId}', 'verb' => 'POST'],
 		['name' => 'card#removeLabel', 'url' => '/cards/{cardId}/label/{labelId}', 'verb' => 'DELETE'],
 		['name' => 'card#assignUser', 'url' => '/cards/{cardId}/assign', 'verb' => 'POST'],
-		['name' => 'card#unassignUser', 'url' => '/cards/{cardId}/assign/{userId}', 'verb' => 'DELETE'],
+		['name' => 'card#unassignUser', 'url' => '/cards/{cardId}/unassign', 'verb' => 'PUT'],
 
+		// attachments
 		['name' => 'attachment#getAll', 'url' => '/cards/{cardId}/attachments', 'verb' => 'GET'],
 		['name' => 'attachment#create', 'url' => '/cards/{cardId}/attachment', 'verb' => 'POST'],
 		['name' => 'attachment#display', 'url' => '/cards/{cardId}/attachment/{attachmentId}', 'verb' => 'GET'],
@@ -109,6 +108,8 @@ return [
 		['name' => 'card_api#reorder', 'url' => '/api/v1.0/boards/{boardId}/stacks/{stackId}/cards/{cardId}/reorder', 'verb' => 'PUT'],
 		['name' => 'card_api#delete', 'url' => '/api/v1.0/boards/{boardId}/stacks/{stackId}/cards/{cardId}', 'verb' => 'DELETE'],
 
+		['name' => 'card_api#findAllWithDue', 'url' => '/api/v1.0/dashboard/due', 'verb' => 'GET'],
+
 		['name' => 'label_api#get', 'url' => '/api/v1.0/boards/{boardId}/labels/{labelId}', 'verb' => 'GET'],
 		['name' => 'label_api#create', 'url' => '/api/v1.0/boards/{boardId}/labels', 'verb' => 'POST'],
 		['name' => 'label_api#update', 'url' => '/api/v1.0/boards/{boardId}/labels/{labelId}', 'verb' => 'PUT'],
@@ -122,5 +123,16 @@ return [
 		['name' => 'attachment_api#restore', 'url' => '/api/v1.0/boards/{boardId}/stacks/{stackId}/cards/{cardId}/attachments/{attachmentId}/restore', 'verb' => 'PUT'],
 
 		['name' => 'board_api#preflighted_cors', 'url' => '/api/v1.0/{path}','verb' => 'OPTIONS', 'requirements' => ['path' => '.+']],
+	],
+	'ocs' => [
+		['name' => 'Config#get', 'url' => '/api/v1.0/config', 'verb' => 'GET'],
+		['name' => 'Config#setValue', 'url' => '/api/v1.0/config/{key}', 'verb' => 'POST'],
+
+		['name' => 'comments_api#list', 'url' => '/api/v1.0/cards/{cardId}/comments', 'verb' => 'GET'],
+		['name' => 'comments_api#create', 'url' => '/api/v1.0/cards/{cardId}/comments', 'verb' => 'POST'],
+		['name' => 'comments_api#update', 'url' => '/api/v1.0/cards/{cardId}/comments/{commentId}', 'verb' => 'PUT'],
+		['name' => 'comments_api#delete', 'url' => '/api/v1.0/cards/{cardId}/comments/{commentId}', 'verb' => 'DELETE'],
+
+		['name' => 'overview_api#upcomingCards', 'url' => '/api/v1.0/overview/upcoming', 'verb' => 'GET'],
 	]
 ];

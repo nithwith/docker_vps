@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 
@@ -28,7 +29,6 @@ declare(strict_types=1);
 
 namespace OCA\Deck\Service;
 
-
 use OC\FullTextSearch\Model\DocumentAccess;
 use OC\FullTextSearch\Model\IndexDocument;
 use OCA\Deck\Db\Board;
@@ -37,6 +37,7 @@ use OCA\Deck\Db\Card;
 use OCA\Deck\Db\CardMapper;
 use OCA\Deck\Db\Stack;
 use OCA\Deck\Db\StackMapper;
+use OCA\Deck\Event\FTSEvent;
 use OCA\Deck\Provider\DeckProvider;
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
@@ -45,8 +46,6 @@ use OCP\FullTextSearch\IFullTextSearchManager;
 use OCP\FullTextSearch\Model\IDocumentAccess;
 use OCP\FullTextSearch\Model\IIndex;
 use OCP\FullTextSearch\Model\IIndexDocument;
-use Symfony\Component\EventDispatcher\GenericEvent;
-
 
 /**
  * Class FullTextSearchService
@@ -90,9 +89,9 @@ class FullTextSearchService {
 
 
 	/**
-	 * @param GenericEvent $e
+	 * @param FTSEvent $e
 	 */
-	public function onCardCreated(GenericEvent $e) {
+	public function onCardCreated(FTSEvent $e) {
 		$cardId = $e->getArgument('id');
 		$userId = $e->getArgument('userId');
 
@@ -106,9 +105,9 @@ class FullTextSearchService {
 
 
 	/**
-	 * @param GenericEvent $e
+	 * @param FTSEvent $e
 	 */
-	public function onCardUpdated(GenericEvent $e) {
+	public function onCardUpdated(FTSEvent $e) {
 		$cardId = $e->getArgument('id');
 
 		try {
@@ -121,9 +120,9 @@ class FullTextSearchService {
 
 
 	/**
-	 * @param GenericEvent $e
+	 * @param FTSEvent $e
 	 */
-	public function onCardDeleted(GenericEvent $e) {
+	public function onCardDeleted(FTSEvent $e) {
 		$cardId = $e->getArgument('id');
 
 		try {
@@ -136,13 +135,13 @@ class FullTextSearchService {
 
 
 	/**
-	 * @param GenericEvent $e
+	 * @param FTSEvent $e
 	 */
-	public function onBoardShares(GenericEvent $e) {
+	public function onBoardShares(FTSEvent $e) {
 		$boardId = (int)$e->getArgument('boardId');
 
 		$cards = array_map(
-			function(Card $item) {
+			function (Card $item) {
 				return $item->getId();
 			},
 			$this->getCardsFromBoard($boardId)
@@ -266,7 +265,6 @@ class FullTextSearchService {
 	 */
 	private function getStacksFromBoard(int $boardId): array {
 		return $this->stackMapper->findAll($boardId, null, null);
-
 	}
 
 
@@ -278,7 +276,4 @@ class FullTextSearchService {
 	private function getBoardsFromUser(string $userId): array {
 		return $this->boardMapper->findAllByUser($userId, null, null, -1);
 	}
-
-
 }
-

@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[37],{519:function(e,t,n){e.exports=function(){"use strict";return{code:"ka",week:{dow:1,doy:7},buttonText:{prev:"წინა",next:"შემდეგი",today:"დღეს",month:"თვე",week:"კვირა",day:"დღე",list:"დღის წესრიგი"},weekLabel:"კვ",allDayText:"მთელი დღე",eventLimitText:function(e){return"+ კიდევ "+e},noEventsMessage:"ღონისძიებები არ არის"}}()}}]);
-//# sourceMappingURL=calendar.37.1c15223af751a3e6217c.js.map

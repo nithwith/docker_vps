@@ -23,16 +23,14 @@
 
 namespace OCA\Deck\Service;
 
+use OCA\Deck\AppInfo\Application;
 use OCA\Deck\Db\BoardMapper;
-use OCA\Deck\Service\BoardService;
-use OCA\Deck\Service\StackService;
-use OCA\Deck\Service\CardService;
 use OCP\IConfig;
 use OCP\IL10N;
 use OCA\Deck\BadRequestException;
+use OCP\PreConditionNotMetException;
 
 class DefaultBoardService {
-
 	private $boardMapper;
 	private $boardService;
 	private $stackService;
@@ -40,7 +38,7 @@ class DefaultBoardService {
 	private $config;
 	private $l10n;
 
-    public function __construct(
+	public function __construct(
 			IL10N $l10n,
 			BoardMapper $boardMapper,
 			BoardService $boardService,
@@ -48,32 +46,35 @@ class DefaultBoardService {
 			CardService $cardService,
 			IConfig $config
 			) {
-
 		$this->boardService = $boardService;
 		$this->stackService = $stackService;
 		$this->cardService = $cardService;
 		$this->config = $config;
 		$this->boardMapper = $boardMapper;
 		$this->l10n = $l10n;
-    }
+	}
 
 	/**
+	 * Return true if this is the first time a user is acessing their instance with deck enabled
+	 *
 	 * @param $userId
-	 * @param $appName
 	 * @return bool
-	 * @throws \OCP\PreConditionNotMetException
 	 */
-	public function checkFirstRun($userId, $appName) {
-		$firstRun = $this->config->getUserValue($userId, $appName, 'firstRun', 'yes');
+	public function checkFirstRun($userId): bool {
+		$firstRun = $this->config->getUserValue($userId, Application::APP_ID, 'firstRun', 'yes');
 		$userBoards = $this->boardMapper->findAllByUser($userId);
-		
+
 		if ($firstRun === 'yes' && count($userBoards) === 0) {
-			$this->config->setUserValue($userId, $appName, 'firstRun', 'no');
+			try {
+				$this->config->setUserValue($userId, Application::APP_ID, 'firstRun', 'no');
+			} catch (PreConditionNotMetException $e) {
+				return false;
+			}
 			return true;
 		}
 
 		return false;
-    }
+	}
 
 	/**
 	 * @param $title
@@ -86,8 +87,7 @@ class DefaultBoardService {
 	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
 	 * @throws BadRequestException
 	 */
-	public function createDefaultBoard($title, $userId, $color) {
-
+	public function createDefaultBoard(string $title, string $userId, string $color) {
 		if ($title === false || $title === null) {
 			throw new BadRequestException('title must be provided');
 		}
@@ -100,20 +100,20 @@ class DefaultBoardService {
 			throw new BadRequestException('color must be provided');
 		}
 
-        $defaultBoard = $this->boardService->create($title, $userId, $color);
-        $defaultStacks = [];
-        $defaultCards = [];
+		$defaultBoard = $this->boardService->create($title, $userId, $color);
+		$defaultStacks = [];
+		$defaultCards = [];
 
-		$boardId = $defaultBoard->getId();		
+		$boardId = $defaultBoard->getId();
 
 		$defaultStacks[] = $this->stackService->create($this->l10n->t('To do'), $boardId, 1);
 		$defaultStacks[] = $this->stackService->create($this->l10n->t('Doing'), $boardId, 1);
 		$defaultStacks[] = $this->stackService->create($this->l10n->t('Done'), $boardId, 1);
-        
+
 		$defaultCards[] = $this->cardService->create($this->l10n->t('Example Task 3'), $defaultStacks[0]->getId(), 'text', 0, $userId);
 		$defaultCards[] = $this->cardService->create($this->l10n->t('Example Task 2'), $defaultStacks[1]->getId(), 'text', 0, $userId);
 		$defaultCards[] = $this->cardService->create($this->l10n->t('Example Task 1'), $defaultStacks[2]->getId(), 'text', 0, $userId);
 
 		return $defaultBoard;
-    }
+	}
 }

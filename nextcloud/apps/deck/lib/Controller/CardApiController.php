@@ -25,6 +25,7 @@
 
  namespace OCA\Deck\Controller;
 
+ use OCA\Deck\Service\AssignmentService;
  use OCP\AppFramework\ApiController;
  use OCP\AppFramework\Http;
  use OCP\AppFramework\Http\DataResponse;
@@ -32,13 +33,14 @@
  use OCA\Deck\Service\CardService;
 
  /**
- * Class BoardApiController
- *
- * @package OCA\Deck\Controller
- */
+  * Class BoardApiController
+  *
+  * @package OCA\Deck\Controller
+  */
 class CardApiController extends ApiController {
 	private $cardService;
 	private $userId;
+	private $assignmentService;
 
 	/**
 	 * @param string $appName
@@ -46,10 +48,11 @@ class CardApiController extends ApiController {
 	 * @param CardService $cardService
 	 * @param $userId
 	 */
-	public function __construct($appName, IRequest $request, CardService $cardService, $userId) {
+	public function __construct($appName, IRequest $request, CardService $cardService, AssignmentService $assignmentService, $userId) {
 		parent::__construct($appName, $request);
 		$this->cardService = $cardService;
 		$this->userId = $userId;
+		$this->assignmentService = $assignmentService;
 	}
 
 	/**
@@ -76,8 +79,8 @@ class CardApiController extends ApiController {
 	 *
 	 * Get a specific card.
 	 */
-	public function create($title, $type = 'plain', $order = 999, $description = '') {
-		$card = $this->cardService->create($title, $this->request->getParam('stackId'), $type, $order, $this->userId, $description);
+	public function create($title, $type = 'plain', $order = 999, $description = '', $duedate = null) {
+		$card = $this->cardService->create($title, $this->request->getParam('stackId'), $type, $order, $this->userId, $description, $duedate);
 		return new DataResponse($card, HTTP::STATUS_OK);
 	}
 
@@ -135,10 +138,10 @@ class CardApiController extends ApiController {
 	 * @CORS
 	 * @NoCSRFRequired
 	 *
-	 * Unassign a user from a card
+	 * Assign a user to a card
 	 */
-	public function unassignUser($userId) {
-		$card = $this->cardService->unassignUser($this->request->getParam('cardId'), $userId);
+	public function assignUser($cardId, $userId, $type = 0) {
+		$card = $this->assignmentService->assignUser($cardId, $userId, $type);
 		return new DataResponse($card, HTTP::STATUS_OK);
 	}
 
@@ -147,10 +150,10 @@ class CardApiController extends ApiController {
 	 * @CORS
 	 * @NoCSRFRequired
 	 *
-	 * Assign a user to a card
+	 * Unassign a user from a card
 	 */
-	public function assignUser($userId) {
-		$card = $this->cardService->assignUser($this->request->getParam('cardId'), $userId);;
+	public function unassignUser($cardId, $userId, $type = 0) {
+		$card = $this->assignmentService->unassignUser($cardId, $userId, $type);
 		return new DataResponse($card, HTTP::STATUS_OK);
 	}
 

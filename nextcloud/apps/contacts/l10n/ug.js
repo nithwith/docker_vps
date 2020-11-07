@@ -2,14 +2,17 @@ OC.L10N.register(
     "contacts",
     {
     "Contacts" : "ئالاقەداشلار",
-    "Loading" : "Loading",
     "Name" : "ئاتى",
     "Title" : "ماۋزۇ",
     "Download" : "چۈشۈر",
     "Delete" : "ئۆچۈر",
+    "Cancel" : "ۋاز كەچ",
     "Groups" : "گۇرۇپپا",
     "Rename" : "ئات ئۆزگەرت",
     "First name" : "ئاتى",
+    "Group name" : "گۇرۇپپا ئاتى",
+    "Close" : "ياپ",
+    "Import" : "ئەكىر",
     "Nickname" : "تەخەللۇس",
     "Notes" : "ئىزاھاتلار",
     "Location" : "ئورنى",
@@ -29,4 +32,4 @@ OC.L10N.register(
     "Voice" : "ئاۋاز",
     "None" : "يوق"
 },
-"nplurals=1; plural=0;");
+"nplurals=2; plural=(n != 1);");

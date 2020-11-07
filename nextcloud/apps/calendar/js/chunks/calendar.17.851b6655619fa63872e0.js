@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[17],{499:function(n,o,e){n.exports=function(){"use strict";return{code:"en-gb",week:{dow:1,doy:4}}}()}}]);
-//# sourceMappingURL=calendar.17.851b6655619fa63872e0.js.map

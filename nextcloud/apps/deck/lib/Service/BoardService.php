@@ -26,13 +26,13 @@ namespace OCA\Deck\Service;
 
 use OCA\Deck\Activity\ActivityManager;
 use OCA\Deck\Activity\ChangeSet;
-use OCA\Deck\Collaboration\Resources\ResourceProvider;
 use OCA\Deck\Db\Acl;
 use OCA\Deck\Db\AclMapper;
 use OCA\Deck\Db\AssignedUsersMapper;
 use OCA\Deck\Db\ChangeHelper;
 use OCA\Deck\Db\IPermissionMapper;
 use OCA\Deck\Db\Label;
+use OCA\Deck\Db\Stack;
 use OCA\Deck\Db\StackMapper;
 use OCA\Deck\NoPermissionException;
 use OCA\Deck\Notification\NotificationHelper;
@@ -47,9 +47,7 @@ use OCA\Deck\BadRequestException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
-
 class BoardService {
-
 	private $boardMapper;
 	private $stackMapper;
 	private $labelMapper;
@@ -65,6 +63,8 @@ class BoardService {
 	/** @var EventDispatcherInterface */
 	private $eventDispatcher;
 	private $changeHelper;
+
+	private $boardsCache = null;
 
 	public function __construct(
 		BoardMapper $boardMapper,
@@ -107,40 +107,53 @@ class BoardService {
 		$this->userId = $userId;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function findAll($since = -1, $details = null) {
+	public function getUserBoards(int $since = -1, $includeArchived = true): array {
 		$userInfo = $this->getBoardPrerequisites();
-		$userBoards = $this->boardMapper->findAllByUser($userInfo['user'], null, null, $since);
-		$groupBoards = $this->boardMapper->findAllByGroups($userInfo['user'], $userInfo['groups'],null, null,  $since);
-		$circleBoards = $this->boardMapper->findAllByCircles($userInfo['user'], null, null,  $since);
-		$complete = array_merge($userBoards, $groupBoards, $circleBoards);
+		$userBoards = $this->boardMapper->findAllByUser($userInfo['user'], null, null, $since, $includeArchived);
+		$groupBoards = $this->boardMapper->findAllByGroups($userInfo['user'], $userInfo['groups'],null, null, $since, $includeArchived);
+		$circleBoards = $this->boardMapper->findAllByCircles($userInfo['user'], null, null,  $since, $includeArchived);
+		$mergedBoards = array_merge($userBoards, $groupBoards, $circleBoards);
 		$result = [];
 		/** @var Board $item */
-		foreach ($complete as &$item) {
+		foreach ($mergedBoards as &$item) {
 			if (!array_key_exists($item->getId(), $result)) {
-				$this->boardMapper->mapOwner($item);
-				if ($item->getAcl() !== null) {
-					foreach ($item->getAcl() as &$acl) {
-						$this->boardMapper->mapAcl($acl);
-					}
-				}
-				if ($details !== null) {
-					$this->enrichWithStacks($item);
-					$this->enrichWithLabels($item);
-					$this->enrichWithUsers($item);
-				}
-				$permissions = $this->permissionService->matchPermissions($item);
-				$item->setPermissions([
-					'PERMISSION_READ' => $permissions[Acl::PERMISSION_READ],
-					'PERMISSION_EDIT' => $permissions[Acl::PERMISSION_EDIT],
-					'PERMISSION_MANAGE' => $permissions[Acl::PERMISSION_MANAGE],
-					'PERMISSION_SHARE' => $permissions[Acl::PERMISSION_SHARE]
-				]);
 				$result[$item->getId()] = $item;
 			}
 		}
+		return array_values($result);
+	}
+	/**
+	 * @return array
+	 */
+	public function findAll($since = -1, $details = null, $includeArchived = true) {
+		if ($this->boardsCache) {
+			return $this->boardsCache;
+		}
+		$complete = $this->getUserBoards($since, $includeArchived);
+		$result = [];
+		/** @var Board $item */
+		foreach ($complete as &$item) {
+			$this->boardMapper->mapOwner($item);
+			if ($item->getAcl() !== null) {
+				foreach ($item->getAcl() as &$acl) {
+					$this->boardMapper->mapAcl($acl);
+				}
+			}
+			if ($details !== null) {
+				$this->enrichWithStacks($item);
+				$this->enrichWithLabels($item);
+				$this->enrichWithUsers($item);
+			}
+			$permissions = $this->permissionService->matchPermissions($item);
+			$item->setPermissions([
+				'PERMISSION_READ' => $permissions[Acl::PERMISSION_READ] ?? false,
+				'PERMISSION_EDIT' => $permissions[Acl::PERMISSION_EDIT] ?? false,
+				'PERMISSION_MANAGE' => $permissions[Acl::PERMISSION_MANAGE] ?? false,
+				'PERMISSION_SHARE' => $permissions[Acl::PERMISSION_SHARE] ?? false
+			]);
+			$result[$item->getId()] = $item;
+		}
+		$this->boardsCache = $result;
 		return array_values($result);
 	}
 
@@ -153,8 +166,10 @@ class BoardService {
 	 * @throws BadRequestException
 	 */
 	public function find($boardId) {
-
-		if ( is_numeric($boardId) === false ) {
+		if ($this->boardsCache && isset($this->boardsCache[$boardId])) {
+			return $this->boardsCache[$boardId];
+		}
+		if (is_numeric($boardId) === false) {
 			throw new BadRequestException('board id must be a number');
 		}
 
@@ -169,12 +184,13 @@ class BoardService {
 		}
 		$permissions = $this->permissionService->matchPermissions($board);
 		$board->setPermissions([
-			'PERMISSION_READ' => $permissions[Acl::PERMISSION_READ],
-			'PERMISSION_EDIT' => $permissions[Acl::PERMISSION_EDIT],
-			'PERMISSION_MANAGE' => $permissions[Acl::PERMISSION_MANAGE],
-			'PERMISSION_SHARE' => $permissions[Acl::PERMISSION_SHARE]
+			'PERMISSION_READ' => $permissions[Acl::PERMISSION_READ] ?? false,
+			'PERMISSION_EDIT' => $permissions[Acl::PERMISSION_EDIT] ?? false,
+			'PERMISSION_MANAGE' => $permissions[Acl::PERMISSION_MANAGE] ?? false,
+			'PERMISSION_SHARE' => $permissions[Acl::PERMISSION_SHARE] ?? false
 		]);
 		$this->enrichWithUsers($board);
+		$this->boardsCache[$board->getId()] = $board;
 		return $board;
 	}
 
@@ -201,8 +217,7 @@ class BoardService {
 	 * @throws BadRequestException
 	 */
 	public function isArchived($mapper, $id) {
-
-		if (is_numeric($id) === false)  {
+		if (is_numeric($id) === false) {
 			throw new BadRequestException('id must be a number');
 		}
 
@@ -231,12 +246,11 @@ class BoardService {
 	 * @throws BadRequestException
 	 */
 	public function isDeleted($mapper, $id) {
-
 		if ($mapper === false || $mapper === null) {
 			throw new BadRequestException('mapper must be provided');
 		}
 
-		if (is_numeric($id) === false)  {
+		if (is_numeric($id) === false) {
 			throw new BadRequestException('id must be a number');
 		}
 
@@ -264,7 +278,6 @@ class BoardService {
 	 * @throws BadRequestException
 	 */
 	public function create($title, $userId, $color) {
-
 		if ($title === false || $title === null) {
 			throw new BadRequestException('title must be provided');
 		}
@@ -306,10 +319,10 @@ class BoardService {
 		$this->boardMapper->mapOwner($new_board);
 		$permissions = $this->permissionService->matchPermissions($new_board);
 		$new_board->setPermissions([
-			'PERMISSION_READ' => $permissions[Acl::PERMISSION_READ],
-			'PERMISSION_EDIT' => $permissions[Acl::PERMISSION_EDIT],
-			'PERMISSION_MANAGE' => $permissions[Acl::PERMISSION_MANAGE],
-			'PERMISSION_SHARE' => $permissions[Acl::PERMISSION_SHARE]
+			'PERMISSION_READ' => $permissions[Acl::PERMISSION_READ] ?? false,
+			'PERMISSION_EDIT' => $permissions[Acl::PERMISSION_EDIT] ?? false,
+			'PERMISSION_MANAGE' => $permissions[Acl::PERMISSION_MANAGE] ?? false,
+			'PERMISSION_SHARE' => $permissions[Acl::PERMISSION_SHARE] ?? false
 		]);
 		$this->activityManager->triggerEvent(ActivityManager::DECK_OBJECT_BOARD, $new_board, ActivityManager::SUBJECT_BOARD_CREATE);
 		$this->changeHelper->boardChanged($new_board->getId());
@@ -333,12 +346,11 @@ class BoardService {
 	 * @throws BadRequestException
 	 */
 	public function delete($id) {
-
 		if (is_numeric($id) === false) {
 			throw new BadRequestException('board id must be a number');
 		}
 
-		$this->permissionService->checkPermission($this->boardMapper, $id, Acl::PERMISSION_READ);
+		$this->permissionService->checkPermission($this->boardMapper, $id, Acl::PERMISSION_MANAGE);
 		$board = $this->find($id);
 		if ($board->getDeletedAt() > 0) {
 			throw new BadRequestException('This board has already been deleted');
@@ -363,12 +375,11 @@ class BoardService {
 	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
 	 */
 	public function deleteUndo($id) {
-
 		if (is_numeric($id) === false) {
 			throw new BadRequestException('board id must be a number');
 		}
 
-		$this->permissionService->checkPermission($this->boardMapper, $id, Acl::PERMISSION_READ);
+		$this->permissionService->checkPermission($this->boardMapper, $id, Acl::PERMISSION_MANAGE);
 		$board = $this->find($id);
 		$board->setDeletedAt(0);
 		$board = $this->boardMapper->update($board);
@@ -391,11 +402,11 @@ class BoardService {
 	 * @throws BadRequestException
 	 */
 	public function deleteForce($id) {
-		if (is_numeric($id) === false)  {
+		if (is_numeric($id) === false) {
 			throw new BadRequestException('id must be a number');
 		}
 
-		$this->permissionService->checkPermission($this->boardMapper, $id, Acl::PERMISSION_READ);
+		$this->permissionService->checkPermission($this->boardMapper, $id, Acl::PERMISSION_MANAGE);
 		$board = $this->find($id);
 		$delete = $this->boardMapper->delete($board);
 
@@ -418,20 +429,19 @@ class BoardService {
 	 * @throws BadRequestException
 	 */
 	public function update($id, $title, $color, $archived) {
-
 		if (is_numeric($id) === false) {
 			throw new BadRequestException('board id must be a number');
 		}
 
 		if ($title === false || $title === null) {
-			throw new BadRequestException('color must be provided');
+			throw new BadRequestException('title must be provided');
 		}
 
 		if ($color === false || $color === null) {
 			throw new BadRequestException('color must be provided');
 		}
 
-		if ( is_bool($archived) === false ) {
+		if (is_bool($archived) === false) {
 			throw new BadRequestException('archived must be a boolean');
 		}
 
@@ -454,6 +464,17 @@ class BoardService {
 		return $board;
 	}
 
+	private function applyPermissions($boardId, $edit, $share, $manage) {
+		try {
+			$this->permissionService->checkPermission($this->boardMapper, $boardId, Acl::PERMISSION_MANAGE);
+		} catch (NoPermissionException $e) {
+			$acls = $this->aclMapper->findAll($boardId);
+			$edit = $this->permissionService->userCan($acls, Acl::PERMISSION_EDIT, $this->userId) && $edit;
+			$share = $this->permissionService->userCan($acls, Acl::PERMISSION_SHARE, $this->userId) && $share;
+			$manage = $this->permissionService->userCan($acls, Acl::PERMISSION_MANAGE, $this->userId) && $manage;
+		}
+		return [$edit, $share, $manage];
+	}
 
 	/**
 	 * @param $boardId
@@ -467,7 +488,6 @@ class BoardService {
 	 * @throws \OCA\Deck\NoPermissionException
 	 */
 	public function addAcl($boardId, $type, $participant, $edit, $share, $manage) {
-
 		if (is_numeric($boardId) === false) {
 			throw new BadRequestException('board id must be a number');
 		}
@@ -493,6 +513,8 @@ class BoardService {
 		}
 
 		$this->permissionService->checkPermission($this->boardMapper, $boardId, Acl::PERMISSION_SHARE);
+		[$edit, $share, $manage] = $this->applyPermissions($boardId, $edit, $share, $manage);
+
 		$acl = new Acl();
 		$acl->setBoardId($boardId);
 		$acl->setType($type);
@@ -515,7 +537,8 @@ class BoardService {
 			try {
 				$resourceProvider = \OC::$server->query(\OCA\Deck\Collaboration\Resources\ResourceProvider::class);
 				$resourceProvider->invalidateAccessCache($boardId);
-			} catch (\Exception $e) {}
+			} catch (\Exception $e) {
+			}
 		}
 
 		$this->eventDispatcher->dispatch(
@@ -537,7 +560,6 @@ class BoardService {
 	 * @throws BadRequestException
 	 */
 	public function updateAcl($id, $edit, $share, $manage) {
-
 		if (is_numeric($id) === false) {
 			throw new BadRequestException('id must be a number');
 		}
@@ -555,8 +577,10 @@ class BoardService {
 		}
 
 		$this->permissionService->checkPermission($this->aclMapper, $id, Acl::PERMISSION_SHARE);
+
 		/** @var Acl $acl */
 		$acl = $this->aclMapper->find($id);
+		[$edit, $share, $manage] = $this->applyPermissions($acl->getBoardId(), $edit, $share, $manage);
 		$acl->setPermissionEdit($edit);
 		$acl->setPermissionShare($share);
 		$acl->setPermissionManage($manage);
@@ -580,7 +604,6 @@ class BoardService {
 	 * @throws BadRequestException
 	 */
 	public function deleteAcl($id) {
-
 		if (is_numeric($id) === false) {
 			throw new BadRequestException('id must be a number');
 		}
@@ -603,7 +626,8 @@ class BoardService {
 			try {
 				$resourceProvider = \OC::$server->query(\OCA\Deck\Collaboration\Resources\ResourceProvider::class);
 				$resourceProvider->invalidateAccessCache($acl->getBoardId());
-			} catch (\Exception $e) {}
+			} catch (\Exception $e) {
+			}
 		}
 		$delete = $this->aclMapper->delete($acl);
 
@@ -614,10 +638,60 @@ class BoardService {
 		return $delete;
 	}
 
+	/**
+	 * @param $id
+	 * @param $userId
+	 * @return Board
+	 * @throws DoesNotExistException
+	 * @throws \OCA\Deck\NoPermissionException
+	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
+	 * @throws BadRequestException
+	 */
+	public function clone($id, $userId) {
+		if (is_numeric($id) === false) {
+			throw new BadRequestException('board id must be a number');
+		}
+
+		$this->permissionService->checkPermission($this->boardMapper, $id, Acl::PERMISSION_READ);
+
+		$board = $this->boardMapper->find($id);
+		$newBoard = new Board();
+		$newBoard->setTitle($board->getTitle() . ' (' . $this->l10n->t('copy') . ')');
+		$newBoard->setOwner($userId);
+		$newBoard->setColor($board->getColor());
+		$permissions = $this->permissionService->matchPermissions($board);
+		$newBoard->setPermissions([
+			'PERMISSION_READ' => $permissions[Acl::PERMISSION_READ] ?? false,
+			'PERMISSION_EDIT' => $permissions[Acl::PERMISSION_EDIT] ?? false,
+			'PERMISSION_MANAGE' => $permissions[Acl::PERMISSION_MANAGE] ?? false,
+			'PERMISSION_SHARE' => $permissions[Acl::PERMISSION_SHARE] ?? false
+		]);
+		$this->boardMapper->insert($newBoard);
+
+		$labels = $this->labelMapper->findAll($id);
+		foreach ($labels as $label) {
+			$newLabel = new Label();
+			$newLabel->setTitle($label->getTitle());
+			$newLabel->setColor($label->getColor());
+			$newLabel->setBoardId($newBoard->getId());
+			$this->labelMapper->insert($newLabel);
+		}
+
+		$stacks = $this->stackMapper->findAll($id);
+		foreach ($stacks as $stack) {
+			$newStack = new Stack();
+			$newStack->setTitle($stack->getTitle());
+			$newStack->setBoardId($newBoard->getId());
+			$this->stackMapper->insert($newStack);
+		}
+
+		return $newBoard;
+	}
+
 	private function enrichWithStacks($board, $since = -1) {
 		$stacks = $this->stackMapper->findAll($board->getId(), null, null, $since);
 
-		if(\count($stacks) === 0) {
+		if (\count($stacks) === 0) {
 			return;
 		}
 
@@ -627,7 +701,7 @@ class BoardService {
 	private function enrichWithLabels($board, $since = -1) {
 		$labels = $this->labelMapper->findAll($board->getId(), null, null, $since);
 
-		if(\count($labels) === 0) {
+		if (\count($labels) === 0) {
 			return;
 		}
 
@@ -636,10 +710,9 @@ class BoardService {
 
 	private function enrichWithUsers($board, $since = -1) {
 		$boardUsers = $this->permissionService->findUsers($board->getId());
-		if(\count($boardUsers) === 0) {
+		if (\count($boardUsers) === 0) {
 			return;
 		}
 		$board->setUsers(array_values($boardUsers));
 	}
-
 }

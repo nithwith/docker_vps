@@ -15,8 +15,11 @@ Deck is a kanban style organization tool aimed at personal planning and project 
 - :zap: Keep track of changes in the activity stream
 - :rocket: Get your project organized
 
+### Mobile apps
 
-![Deck - Manage cards on your board](https://download.bitgrid.net/nextcloud/deck/screenshots/Deck.png)
+- The [Nextcloud Deck app for Android](https://github.com/stefan-niedermann/nextcloud-deck) is available in the [Google Play Store](https://play.google.com/store/apps/details?id=it.niedermann.nextcloud.deck.play) 
+
+![Deck - Manage cards on your board](http://download.bitgrid.net/nextcloud/deck/screenshots/1.0/Deck-2.png)
 
 ## Installation/Update
 
@@ -41,7 +44,7 @@ Please make sure you have installed the following dependencies: `make, which, ta
 
 ### Install the nightly builds
 
-Instead of setting everything up manually, you can just [download the nightly builds](https://download.bitgrid.net/nextcloud/deck/nightly/) instead. These builds are updated every 24 hours, and are pre-configured with all the needed dependencies.
+Instead of setting everything up manually, you can just [download the nightly build](https://github.com/nextcloud/deck/releases/tag/nightly) instead. These builds are updated every 24 hours, and are pre-configured with all the needed dependencies.
 
 ## Developing
 
@@ -52,6 +55,27 @@ Nothing to prepare, just dig into the code.
 ### JavaScript
 
 Deck requires running a `make build-js` to install npm dependencies and build the JavaScript code using webpack. While developing you can also use `make watch` to rebuild everytime the code changes.
+
+#### Hot reloading
+
+Enable debug mode in your config.php `'debug' => true,`
+
+Without SSL:
+```
+npx webpack-dev-server --config webpack.hot.js \
+    --public localhost:3000 \
+    --output-public-path 'http://localhost:3000/js/'
+```
+
+With SSL:
+```
+npx webpack-dev-server --config webpack.dev.js --https \
+	--cert ~/repos/nextcloud/nc-dev/data/ssl/nextcloud.local.crt \
+    --key ~/repos/nextcloud/nc-dev/data/ssl/nextcloud.local.key \
+    --public nextcloud.local:3000 \
+    --output-public-path 'https://nextcloud.local:3000/js/'
+```
+
 
 ### Running tests
 You can use the provided Makefile to run all tests by using:

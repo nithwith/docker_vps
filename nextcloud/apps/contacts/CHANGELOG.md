@@ -1,3 +1,93 @@
+# Changelog
+
+## 3.4.1 - 2020-10-20
+
+[Full Changelog](https://github.com/nextcloud/contacts/compare/v3.4.0...v3.4.1)
+
+### Enhancements
+- adding diaspora to the list for social sync
+  [\#1853](https://github.com/nextcloud/contacts/pull/1853) ([call-me-matt](https://github.com/call-me-matt))
+
+### Fixed
+- Fix avatar display on read-only contacts and use global Avatar component
+  [\#1846](https://github.com/nextcloud/contacts/pull/1846) ([skjnldsv](https://github.com/skjnldsv))
+- Ignore errors from invalid social ids
+  [\#1829](https://github.com/nextcloud/contacts/pull/1829) ([call-me-matt](https://github.com/call-me-matt))
+- Fix placeholder display
+  [\#1828](https://github.com/nextcloud/contacts/pull/1828) ([skjnldsv](https://github.com/skjnldsv))
+- Fix social sync admin settings
+  [\#1821](https://github.com/nextcloud/contacts/pull/1821) ([skjnldsv](https://github.com/skjnldsv))
+- Force redraw masonry on property resize
+  [\#1819](https://github.com/nextcloud/contacts/pull/1819) ([skjnldsv](https://github.com/skjnldsv))
+- More robust social ids for social sync
+  [\#1843](https://github.com/nextcloud/contacts/pull/1843) ([call-me-matt](https://github.com/call-me-matt))
+
+## 3.4.0 - 2020-09-30
+
+[Full Changelog](https://github.com/nextcloud/contacts/compare/v3.3.0...v3.4.0)
+
+### Enhancements
+- Add Matrix to list of instant messaging networks
+  [\#1761](https://github.com/nextcloud/contacts/pull/1761) ([jtrees](https://github.com/jtrees))
+- Add Zoom as instant messaging
+  [\#1759](https://github.com/nextcloud/contacts/pull/1759) ([EmTeedee](https://github.com/EmTeedee))
+- Update social avatars in chunks
+  [\#1745](https://github.com/nextcloud/contacts/pull/1745) ([call-me-matt](https://github.com/call-me-matt))
+- Allow to get direct contact route
+  [\#1730](https://github.com/nextcloud/contacts/pull/1730) ([skjnldsv](https://github.com/skjnldsv))
+- Allow for regular background updates of avatars from social networks
+  [\#1722](https://github.com/nextcloud/contacts/pull/1722) ([call-me-matt](https://github.com/call-me-matt))
+- Enh/social sync
+  [\#1692](https://github.com/nextcloud/contacts/pull/1692) ([skjnldsv](https://github.com/skjnldsv))
+- Add php cs & stylelint
+  [\#1690](https://github.com/nextcloud/contacts/pull/1690) ([skjnldsv](https://github.com/skjnldsv))
+- Import vcf from files
+  [\#1688](https://github.com/nextcloud/contacts/pull/1688) ([skjnldsv](https://github.com/skjnldsv))
+- Enh/add virtual group
+  [\#1687](https://github.com/nextcloud/contacts/pull/1687) ([skjnldsv](https://github.com/skjnldsv))
+- Additional link to picture menu
+  [\#1645](https://github.com/nextcloud/contacts/pull/1645) ([call-me-matt](https://github.com/call-me-matt))
+- Simplify form
+  [\#1446](https://github.com/nextcloud/contacts/pull/1446) ([jancborchardt](https://github.com/jancborchardt))
+- Support X-PHONETIC-FIRST-NAME and X-PHONETIC-LAST-NAME
+  [\#1741](https://github.com/nextcloud/contacts/pull/1741) ([t-bucchi](https://github.com/t-bucchi))
+
+### Fixed
+- Fix/various design
+  [\#1792](https://github.com/nextcloud/contacts/pull/1792) ([skjnldsv](https://github.com/skjnldsv))
+- Add back the app details toggle
+  [\#1790](https://github.com/nextcloud/contacts/pull/1790) ([skjnldsv](https://github.com/skjnldsv))
+- Properly sort groups
+  [\#1788](https://github.com/nextcloud/contacts/pull/1788) ([skjnldsv](https://github.com/skjnldsv))
+- Fix default addressbook creation
+  [\#1787](https://github.com/nextcloud/contacts/pull/1787) ([skjnldsv](https://github.com/skjnldsv))
+- Fix avatar sanitize and cleanup code & css
+  [\#1786](https://github.com/nextcloud/contacts/pull/1786) ([skjnldsv](https://github.com/skjnldsv))
+- Fix/virtual group
+  [\#1770](https://github.com/nextcloud/contacts/pull/1770) ([skjnldsv](https://github.com/skjnldsv))
+- Implement masonry
+  [\#1755](https://github.com/nextcloud/contacts/pull/1755) ([skjnldsv](https://github.com/skjnldsv))
+- Fix group filter trim
+  [\#1732](https://github.com/nextcloud/contacts/pull/1732) ([skjnldsv](https://github.com/skjnldsv))
+
+## 3.3.0 – 2020-04-14
+
+[Full Changelog](https://github.com/nextcloud/contacts/compare/v3.2.0...v3.3.0)
+
+### Enhancements
+- Add ability to clone contact
+  [\#1462](https://github.com/nextcloud/contacts/pull/1462) ([skjnldsv](https://github.com/skjnldsv))
+
+### Fixed
+- Fix no sharing menu position
+  [\#1500](https://github.com/nextcloud/contacts/pull/1500) ([skjnldsv](https://github.com/skjnldsv))
+- Support multiple type declaration
+  [\#942](https://github.com/nextcloud/contacts/issues/942) ([skjnldsv](https://github.com/skjnldsv))
+
+### Security fixed
+- Properly sanitize avatars in upload
+  [\#1514](https://github.com/nextcloud/contacts/pull/1514) ([skjnldsv](https://github.com/skjnldsv))
+
 ## 3.2.0 – 2020-02-29
 ### Fixed
 - Fix first contact sync (Contact saving hangs and protocol says uid already exists)
@@ -140,7 +230,7 @@
   [#991](https://github.com/nextcloud/contacts/pull/991)
 - Use displayname as file name when downloading a contact
   [#1022](https://github.com/nextcloud/contacts/pull/1022)
-- Show vcard as qrcode
+- Show vCard as qrcode
   [#1017](https://github.com/nextcloud/contacts/pull/1017)
 - Use virtual scroller for big contacts list display performances
   [#1018](https://github.com/nextcloud/contacts/pull/1018)

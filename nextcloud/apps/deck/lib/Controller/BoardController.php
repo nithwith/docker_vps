@@ -28,9 +28,6 @@ use OCA\Deck\Service\BoardService;
 use OCA\Deck\Service\PermissionService;
 use OCP\AppFramework\ApiController;
 use OCP\IRequest;
-use OCP\AppFramework\Controller;
-use OCP\IUserManager;
-use OCP\IGroupManager;
 
 class BoardController extends ApiController {
 	private $userId;
@@ -150,4 +147,12 @@ class BoardController extends ApiController {
 		return $this->boardService->deleteAcl($aclId);
 	}
 
+	/**
+	 * @NoAdminRequired
+	 * @param $boardId
+	 * @return \OCP\Deck\DB\Board
+	 */
+	public function clone($boardId) {
+		return $this->boardService->clone($boardId, $this->userId);
+	}
 }

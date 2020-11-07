@@ -28,26 +28,23 @@ namespace OCA\Deck\Service;
 
 use OCA\Deck\Activity\ActivityManager;
 use OCA\Deck\Activity\ChangeSet;
-use OCA\Deck\Db\AssignedUsers;
 use OCA\Deck\Db\AssignedUsersMapper;
 use OCA\Deck\Db\Card;
 use OCA\Deck\Db\CardMapper;
 use OCA\Deck\Db\Acl;
 use OCA\Deck\Db\ChangeHelper;
 use OCA\Deck\Db\StackMapper;
+use OCA\Deck\Event\FTSEvent;
 use OCA\Deck\Notification\NotificationHelper;
 use OCA\Deck\Db\BoardMapper;
 use OCA\Deck\Db\LabelMapper;
-use OCA\Deck\NotFoundException;
 use OCA\Deck\StatusException;
 use OCA\Deck\BadRequestException;
 use OCP\Comments\ICommentsManager;
+use OCP\EventDispatcher\IEventDispatcher;
 use OCP\IUserManager;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\EventDispatcher\GenericEvent;
 
 class CardService {
-
 	private $cardMapper;
 	private $stackMapper;
 	private $boardMapper;
@@ -61,7 +58,6 @@ class CardService {
 	private $activityManager;
 	private $commentsManager;
 	private $changeHelper;
-	/** @var EventDispatcherInterface */
 	private $eventDispatcher;
 	private $userManager;
 
@@ -79,7 +75,7 @@ class CardService {
 		ICommentsManager $commentsManager,
 		IUserManager $userManager,
 		ChangeHelper $changeHelper,
-		EventDispatcherInterface $eventDispatcher,
+		IEventDispatcher $eventDispatcher,
 		$userId
 	) {
 		$this->cardMapper = $cardMapper;
@@ -120,6 +116,11 @@ class CardService {
 		return $cards;
 	}
 
+	public function search($boardIds, $term) {
+		$cards = $this->cardMapper->search($boardIds, $term);
+		return $cards;
+	}
+
 	/**
 	 * @param $cardId
 	 * @return \OCA\Deck\Db\RelationalEntity
@@ -129,7 +130,6 @@ class CardService {
 	 * @throws BadRequestException
 	 */
 	public function find($cardId) {
-
 		if (is_numeric($cardId) === false) {
 			throw new BadRequestException('card id must be a number');
 		}
@@ -142,6 +142,15 @@ class CardService {
 		$card->setAttachments($attachments);
 		$this->enrich($card);
 		return $card;
+	}
+
+	public function findCalendarEntries($boardId) {
+		$this->permissionService->checkPermission($this->boardMapper, $boardId, Acl::PERMISSION_READ);
+		$cards = $this->cardMapper->findCalendarEntries($boardId);
+		foreach ($cards as $card) {
+			$this->enrich($card);
+		}
+		return $cards;
 	}
 
 	/**
@@ -158,7 +167,7 @@ class CardService {
 	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
 	 * @throws BadrequestException
 	 */
-	public function create($title, $stackId, $type, $order, $owner, $description = '') {
+	public function create($title, $stackId, $type, $order, $owner, $description = '', $duedate = null) {
 		if ($title === 'false' || $title === null) {
 			throw new BadRequestException('title must be provided');
 		}
@@ -190,13 +199,14 @@ class CardService {
 		$card->setOrder($order);
 		$card->setOwner($owner);
 		$card->setDescription($description);
+		$card->setDuedate($duedate);
 		$card = $this->cardMapper->insert($card);
 		$this->activityManager->triggerEvent(ActivityManager::DECK_OBJECT_CARD, $card, ActivityManager::SUBJECT_CARD_CREATE);
 		$this->changeHelper->cardChanged($card->getId(), false);
 
 		$this->eventDispatcher->dispatch(
 			'\OCA\Deck\Card::onCreate',
-			new GenericEvent(
+			new FTSEvent(
 				null, ['id' => $card->getId(), 'card' => $card, 'userId' => $owner, 'stackId' => $stackId]
 			)
 		);
@@ -214,7 +224,6 @@ class CardService {
 	 * @throws BadRequestException
 	 */
 	public function delete($id) {
-
 		if (is_numeric($id) === false) {
 			throw new BadRequestException('card id must be a number');
 		}
@@ -230,7 +239,7 @@ class CardService {
 		$this->changeHelper->cardChanged($card->getId(), false);
 
 		$this->eventDispatcher->dispatch(
-			'\OCA\Deck\Card::onDelete', new GenericEvent(null, ['id' => $id, 'card' => $card])
+			'\OCA\Deck\Card::onDelete', new FTSEvent(null, ['id' => $id, 'card' => $card])
 		);
 
 		return $card;
@@ -253,7 +262,6 @@ class CardService {
 	 * @throws BadRequestException
 	 */
 	public function update($id, $title, $stackId, $type, $order = 0, $description = '', $owner, $duedate = null, $deletedAt = null, $archived = null) {
-
 		if (is_numeric($id) === false) {
 			throw new BadRequestException('card id must be a number');
 		}
@@ -275,6 +283,8 @@ class CardService {
 		}
 
 		$this->permissionService->checkPermission($this->cardMapper, $id, Acl::PERMISSION_EDIT);
+		$this->permissionService->checkPermission($this->stackMapper, $stackId, Acl::PERMISSION_EDIT);
+
 		if ($this->boardService->isArchived($this->cardMapper, $id)) {
 			throw new StatusException('Operation not allowed. This board is archived.');
 		}
@@ -304,7 +314,7 @@ class CardService {
 		$card->setOrder($order);
 		$card->setOwner($owner);
 		$card->setDuedate($duedate);
-		if ($deletedAt) {
+		if ($deletedAt !== null) {
 			$card->setDeletedAt($deletedAt);
 		}
 		if ($archived !== null) {
@@ -326,7 +336,7 @@ class CardService {
 		$this->changeHelper->cardChanged($card->getId(), true);
 
 		$this->eventDispatcher->dispatch(
-			'\OCA\Deck\Card::onUpdate', new GenericEvent(null, ['id' => $id, 'card' => $card])
+			'\OCA\Deck\Card::onUpdate', new FTSEvent(null, ['id' => $id, 'card' => $card])
 		);
 
 		return $card;
@@ -343,7 +353,6 @@ class CardService {
 	 * @throws BadRequestException
 	 */
 	public function rename($id, $title) {
-
 		if (is_numeric($id) === false) {
 			throw new BadRequestException('id must be a number');
 		}
@@ -365,7 +374,7 @@ class CardService {
 		$update = $this->cardMapper->update($card);
 
 		$this->eventDispatcher->dispatch(
-			'\OCA\Deck\Card::onUpdate', new GenericEvent(null, ['id' => $id, 'card' => $card])
+			'\OCA\Deck\Card::onUpdate', new FTSEvent(null, ['id' => $id, 'card' => $card])
 		);
 
 		return $update;
@@ -383,7 +392,6 @@ class CardService {
 	 * @throws BadRequestException
 	 */
 	public function reorder($id, $stackId, $order) {
-
 		if (is_numeric($id) === false) {
 			throw new BadRequestException('card id must be a number');
 		}
@@ -397,9 +405,22 @@ class CardService {
 		}
 
 		$this->permissionService->checkPermission($this->cardMapper, $id, Acl::PERMISSION_EDIT);
+		$this->permissionService->checkPermission($this->stackMapper, $stackId, Acl::PERMISSION_EDIT);
+
 		if ($this->boardService->isArchived($this->cardMapper, $id)) {
 			throw new StatusException('Operation not allowed. This board is archived.');
 		}
+
+		$card = $this->cardMapper->find($id);
+		if ($card->getArchived()) {
+			throw new StatusException('Operation not allowed. This card is archived.');
+		}
+		$changes = new ChangeSet($card);
+		$card->setStackId($stackId);
+		$this->cardMapper->update($card);
+		$changes->setAfter($card);
+		$this->activityManager->triggerUpdateEvents(ActivityManager::DECK_OBJECT_CARD, $changes, ActivityManager::SUBJECT_CARD_UPDATE);
+
 		$cards = $this->cardMapper->findAll($stackId);
 		$result = [];
 		$i = 0;
@@ -436,7 +457,6 @@ class CardService {
 	 * @throws BadRequestException
 	 */
 	public function archive($id) {
-
 		if (is_numeric($id) === false) {
 			throw new BadRequestException('id must be a number');
 		}
@@ -453,7 +473,7 @@ class CardService {
 		$this->changeHelper->cardChanged($id, false);
 
 		$this->eventDispatcher->dispatch(
-			'\OCA\Deck\Card::onUpdate', new GenericEvent(null, ['id' => $id, 'card' => $card])
+			'\OCA\Deck\Card::onUpdate', new FTSEvent(null, ['id' => $id, 'card' => $card])
 		);
 
 		return $newCard;
@@ -469,7 +489,6 @@ class CardService {
 	 * @throws BadRequestException
 	 */
 	public function unarchive($id) {
-
 		if (is_numeric($id) === false) {
 			throw new BadRequestException('id must be a number');
 		}
@@ -485,7 +504,7 @@ class CardService {
 		$this->changeHelper->cardChanged($id, false);
 
 		$this->eventDispatcher->dispatch(
-			'\OCA\Deck\Card::onUpdate', new GenericEvent(null, ['id' => $id, 'card' => $card])
+			'\OCA\Deck\Card::onUpdate', new FTSEvent(null, ['id' => $id, 'card' => $card])
 		);
 
 		return $newCard;
@@ -501,7 +520,6 @@ class CardService {
 	 * @throws BadRequestException
 	 */
 	public function assignLabel($cardId, $labelId) {
-
 		if (is_numeric($cardId) === false) {
 			throw new BadRequestException('card id must be a number');
 		}
@@ -524,7 +542,7 @@ class CardService {
 		$this->activityManager->triggerEvent(ActivityManager::DECK_OBJECT_CARD, $card, ActivityManager::SUBJECT_LABEL_ASSIGN, ['label' => $label]);
 
 		$this->eventDispatcher->dispatch(
-			'\OCA\Deck\Card::onUpdate', new GenericEvent(null, ['id' => $cardId, 'card' => $card])
+			'\OCA\Deck\Card::onUpdate', new FTSEvent(null, ['id' => $cardId, 'card' => $card])
 		);
 	}
 
@@ -538,7 +556,6 @@ class CardService {
 	 * @throws BadRequestException
 	 */
 	public function removeLabel($cardId, $labelId) {
-
 		if (is_numeric($cardId) === false) {
 			throw new BadRequestException('card id must be a number');
 		}
@@ -561,100 +578,31 @@ class CardService {
 		$this->activityManager->triggerEvent(ActivityManager::DECK_OBJECT_CARD, $card, ActivityManager::SUBJECT_LABEL_UNASSING, ['label' => $label]);
 
 		$this->eventDispatcher->dispatch(
-			'\OCA\Deck\Card::onUpdate', new GenericEvent(null, ['id' => $cardId, 'card' => $card])
+			'\OCA\Deck\Card::onUpdate', new FTSEvent(null, ['id' => $cardId, 'card' => $card])
 		);
 	}
 
 	/**
-	 * @param $cardId
-	 * @param $userId
-	 * @return bool|null|\OCP\AppFramework\Db\Entity
-	 * @throws BadRequestException
+	 *
+	 * @return array
 	 * @throws \OCA\Deck\NoPermissionException
-	 * @throws \OCP\AppFramework\Db\DoesNotExistException
-	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
+	 * @throws BadRequestException
 	 */
-	public function assignUser($cardId, $userId) {
-
-		if (is_numeric($cardId) === false) {
-			throw new BadRequestException('card id must be a number');
-		}
-
-		if ($userId === false || $userId === null) {
-			throw new BadRequestException('user id must be provided');
-		}
-
-		$this->permissionService->checkPermission($this->cardMapper, $cardId, Acl::PERMISSION_EDIT);
-		$assignments = $this->assignedUsersMapper->find($cardId);
-		foreach ($assignments as $assignment) {
-			if ($assignment->getParticipant() === $userId) {
-				throw new BadRequestException('The user is already assigned to the card');
-			}
-		}
-
-		$card = $this->cardMapper->find($cardId);
-		$boardId = $this->cardMapper->findBoardId($cardId);
-		$boardUsers = array_keys($this->permissionService->findUsers($boardId, true));
-		if (!in_array($userId, $boardUsers)) {
-			throw new BadRequestException('The user is not part of the board');
-		}
-
-
-		if ($userId !== $this->currentUser) {
-			/* Notifyuser about the card assignment */
-			$this->notificationHelper->sendCardAssigned($card, $userId);
-		}
-
-		$assignment = new AssignedUsers();
-		$assignment->setCardId($cardId);
-		$assignment->setParticipant($userId);
-		$assignment = $this->assignedUsersMapper->insert($assignment);
-		$this->changeHelper->cardChanged($cardId, false);
-		$this->activityManager->triggerEvent(ActivityManager::DECK_OBJECT_CARD, $card, ActivityManager::SUBJECT_CARD_USER_ASSIGN, ['assigneduser' => $userId]);
-
-		$this->eventDispatcher->dispatch(
-			'\OCA\Deck\Card::onUpdate', new GenericEvent(null, ['id' => $cardId, 'card' => $card])
-		);
-
-		return $assignment;
+	public function findAllWithDue($userId) {
+		$cards = $this->cardMapper->findAllWithDue($userId);
+		
+		return $cards;
 	}
 
 	/**
-	 * @param $cardId
-	 * @param $userId
-	 * @return \OCP\AppFramework\Db\Entity
-	 * @throws BadRequestException
-	 * @throws NotFoundException
+	 *
+	 * @return array
 	 * @throws \OCA\Deck\NoPermissionException
-	 * @throws \OCP\AppFramework\Db\DoesNotExistException
-	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
+	 * @throws BadRequestException
 	 */
-	public function unassignUser($cardId, $userId) {
-		$this->permissionService->checkPermission($this->cardMapper, $cardId, Acl::PERMISSION_EDIT);
-
-		if (is_numeric($cardId) === false) {
-			throw new BadRequestException('card id must be a number');
-		}
-
-		if ($userId === false || $userId === null) {
-			throw new BadRequestException('user must be provided');
-		}
-
-		$assignments = $this->assignedUsersMapper->find($cardId);
-		foreach ($assignments as $assignment) {
-			if ($assignment->getParticipant() === $userId) {
-				$assignment = $this->assignedUsersMapper->delete($assignment);
-				$card = $this->cardMapper->find($cardId);
-				$this->activityManager->triggerEvent(ActivityManager::DECK_OBJECT_CARD, $card, ActivityManager::SUBJECT_CARD_USER_UNASSIGN, ['assigneduser' => $userId]);
-				$this->changeHelper->cardChanged($cardId, false);
-
-				$this->eventDispatcher->dispatch(
-					'\OCA\Deck\Card::onUpdate', new GenericEvent(null, ['id' => $cardId, 'card' => $card])
-				);
-
-				return $assignment;
-			}
-		}
-		throw new NotFoundException('No assignment for ' . $userId . 'found.');
+	public function findAssignedCards($userId) {
+		$cards = $this->cardMapper->findAssignedCards($userId);
+		
+		return $cards;
 	}
 }

@@ -26,7 +26,6 @@ namespace OCA\Deck\Db;
 use OCP\IGroup;
 
 class Group extends RelationalObject {
-
 	public function __construct(IGroup $group) {
 		$primaryKey = $group->getGID();
 		parent::__construct($primaryKey, $group);
@@ -35,7 +34,8 @@ class Group extends RelationalObject {
 	public function getObjectSerialization() {
 		return [
 			'uid' => $this->object->getGID(),
-			'displayname' => $this->object->getDisplayName()
+			'displayname' => $this->object->getDisplayName(),
+			'type' => 1
 		];
 	}
 }

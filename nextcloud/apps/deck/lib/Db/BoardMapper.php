@@ -24,14 +24,12 @@
 namespace OCA\Deck\Db;
 
 use OCP\AppFramework\Db\DoesNotExistException;
-use OCP\AppFramework\QueryException;
 use OCP\IDBConnection;
 use OCP\ILogger;
 use OCP\IUserManager;
 use OCP\IGroupManager;
 
 class BoardMapper extends DeckMapper implements IPermissionMapper {
-
 	private $labelMapper;
 	private $aclMapper;
 	private $stackMapper;
@@ -95,10 +93,18 @@ class BoardMapper extends DeckMapper implements IPermissionMapper {
 	 * @param null $offset
 	 * @return array
 	 */
-	public function findAllByUser($userId, $limit = null, $offset = null, $since = -1) {
-		$sql = 'SELECT id, title, owner, color, archived, deleted_at, 0 as shared, last_modified FROM `*PREFIX*deck_boards` WHERE owner = ? AND last_modified > ? UNION ' .
+	public function findAllByUser($userId, $limit = null, $offset = null, $since = -1, $includeArchived = true) {
+		// FIXME: One moving to QBMapper we should allow filtering the boards probably by method chaining for additional where clauses
+		$sql = 'SELECT id, title, owner, color, archived, deleted_at, 0 as shared, last_modified FROM `*PREFIX*deck_boards` WHERE owner = ? AND last_modified > ?';
+		if (!$includeArchived) {
+			$sql .= ' AND NOT archived AND deleted_at = 0';
+		}
+		$sql .= ' UNION ' .
 			'SELECT boards.id, title, owner, color, archived, deleted_at, 1 as shared, last_modified FROM `*PREFIX*deck_boards` as boards ' .
 			'JOIN `*PREFIX*deck_board_acl` as acl ON boards.id=acl.board_id WHERE acl.participant=? AND acl.type=? AND boards.owner != ? AND last_modified > ?';
+		if (!$includeArchived) {
+			$sql .= ' AND NOT archived AND deleted_at = 0';
+		}
 		$entries = $this->findEntities($sql, [$userId, $since, $userId, Acl::PERMISSION_TYPE_USER, $userId, $since], $limit, $offset);
 		/* @var Board $entry */
 		foreach ($entries as $entry) {
@@ -106,6 +112,11 @@ class BoardMapper extends DeckMapper implements IPermissionMapper {
 			$entry->setAcl($acl);
 		}
 		return $entries;
+	}
+
+	public function findAllByOwner(string $userId, int $limit = null, int $offset = null) {
+		$sql = 'SELECT * FROM `*PREFIX*deck_boards` WHERE owner = ?';
+		return $this->findEntities($sql, [$userId], $limit, $offset);
 	}
 
 	/**
@@ -117,7 +128,7 @@ class BoardMapper extends DeckMapper implements IPermissionMapper {
 	 * @param null $offset
 	 * @return array
 	 */
-	public function findAllByGroups($userId, $groups, $limit = null, $offset = null) {
+	public function findAllByGroups($userId, $groups, $limit = null, $offset = null, $since = -1,$includeArchived = true) {
 		if (count($groups) <= 0) {
 			return [];
 		}
@@ -129,7 +140,10 @@ class BoardMapper extends DeckMapper implements IPermissionMapper {
 				$sql .= ' OR ';
 			}
 		}
-		$sql .= ');';
+		$sql .= ')';
+		if (!$includeArchived) {
+			$sql .= ' AND NOT archived AND deleted_at = 0';
+		}
 		$entries = $this->findEntities($sql, array_merge([$userId, Acl::PERMISSION_TYPE_GROUP], $groups), $limit, $offset);
 		/* @var Board $entry */
 		foreach ($entries as $entry) {
@@ -139,11 +153,11 @@ class BoardMapper extends DeckMapper implements IPermissionMapper {
 		return $entries;
 	}
 
-	public function findAllByCircles($userId, $limit = null, $offset = null) {
+	public function findAllByCircles($userId, $limit = null, $offset = null, $since = -1,$includeArchived = true) {
 		if (!$this->circlesEnabled) {
 			return [];
 		}
-		$circles = array_map(function($circle) {
+		$circles = array_map(function ($circle) {
 			return $circle->getUniqueId();
 		}, \OCA\Circles\Api\v1\Circles::joinedCircles('', true));
 		if (count($circles) === 0) {
@@ -158,7 +172,10 @@ class BoardMapper extends DeckMapper implements IPermissionMapper {
 				$sql .= ' OR ';
 			}
 		}
-		$sql .= ');';
+		$sql .= ')';
+		if (!$includeArchived) {
+			$sql .= ' AND NOT archived AND deleted_at = 0';
+		}
 		$entries = $this->findEntities($sql, array_merge([$userId, Acl::PERMISSION_TYPE_CIRCLE], $circles), $limit, $offset);
 		/* @var Board $entry */
 		foreach ($entries as $entry) {
@@ -215,7 +232,7 @@ class BoardMapper extends DeckMapper implements IPermissionMapper {
 	public function mapAcl(Acl &$acl) {
 		$userManager = $this->userManager;
 		$groupManager = $this->groupManager;
-		$acl->resolveRelation('participant', function($participant) use (&$acl, &$userManager, &$groupManager) {
+		$acl->resolveRelation('participant', function ($participant) use (&$acl, &$userManager, &$groupManager) {
 			if ($acl->getType() === Acl::PERMISSION_TYPE_USER) {
 				$user = $userManager->get($participant);
 				if ($user !== null) {
@@ -232,7 +249,10 @@ class BoardMapper extends DeckMapper implements IPermissionMapper {
 				\OC::$server->getLogger()->debug('Group ' . $acl->getId() . ' not found when mapping acl ' . $acl->getParticipant());
 				return null;
 			}
-			if ($acl->getType() === Acl::PERMISSION_TYPE_CIRCLE && $this->circlesEnabled) {
+			if ($acl->getType() === Acl::PERMISSION_TYPE_CIRCLE) {
+				if (!$this->circlesEnabled) {
+					return null;
+				}
 				try {
 					$circle = \OCA\Circles\Api\v1\Circles::detailsCircle($acl->getParticipant(), true);
 					if ($circle) {
@@ -252,7 +272,7 @@ class BoardMapper extends DeckMapper implements IPermissionMapper {
 	 */
 	public function mapOwner(Board &$board) {
 		$userManager = $this->userManager;
-		$board->resolveRelation('owner', function($owner) use (&$userManager) {
+		$board->resolveRelation('owner', function ($owner) use (&$userManager) {
 			$user = $userManager->get($owner);
 			if ($user !== null) {
 				return new User($user);
@@ -260,6 +280,4 @@ class BoardMapper extends DeckMapper implements IPermissionMapper {
 			return null;
 		});
 	}
-
-
 }

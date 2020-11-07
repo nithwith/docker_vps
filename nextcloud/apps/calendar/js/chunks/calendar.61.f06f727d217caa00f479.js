@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[61],{543:function(t,n,e){t.exports=function(){"use strict";return{code:"ug",buttonText:{month:"ئاي",week:"ھەپتە",day:"كۈن",list:"كۈنتەرتىپ"},allDayText:"پۈتۈن كۈن"}}()}}]);
-//# sourceMappingURL=calendar.61.f06f727d217caa00f479.js.map

@@ -10,6 +10,7 @@ OC.L10N.register(
     "Share link" : "Share link",
     "New calendar" : "يېڭى يىلنامە",
     "Cancel" : "ۋاز كەچ",
+    "Actions" : "مەشغۇلاتلار",
     "Email" : "تورخەت",
     "never" : "ھەرگىز",
     "Repeat" : "قايتىلا",
@@ -24,4 +25,4 @@ OC.L10N.register(
     "Description" : "چۈشەندۈرۈش",
     "Play" : "چال"
 },
-"nplurals=1; plural=0;");
+"nplurals=2; plural=(n != 1);");

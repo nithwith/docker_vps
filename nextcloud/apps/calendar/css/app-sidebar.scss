@@ -20,7 +20,7 @@
  *
  */
 
-#app-sidebar,
+.app-sidebar,
 .event-popover .popover-inner {
 
 	.app-sidebar-header__figure {
@@ -30,6 +30,20 @@
 	.app-sidebar-header__action {
 		margin-top: 0 !important;
 		max-height: none !important;
+		flex-wrap: wrap;
+
+		div {
+			flex-shrink: 0;
+		}
+	}
+
+	/** Hide the submit button for the title, because it does not trigger a save */
+	.app-sidebar-header__desc {
+		.rename-form {
+			button {
+				display: none;
+			}
+		}
 	}
 
 	.editor-invitee-list-empty-message,
@@ -288,7 +302,7 @@
 		}
 
 		.datetime-picker-inline-icon {
-			margin-top: 6px;
+			margin-top: 17px;
 			opacity: .3;
 			border: none;
 			background-color: transparent;
@@ -513,6 +527,14 @@
 					color: var(--color-main-text);
 					outline: none;
 				}
+
+				a.linkified {
+					text-decoration: underline;
+
+					&::after {
+						content: ' ↗';
+					}
+				}
 			}
 
 			&--readonly-calendar-picker {
@@ -666,6 +688,10 @@
 			}
 		}
 	}
+
+	&[x-out-of-boundaries] {
+		margin-top: 75px;
+	}
 }
 
 .event-popover.tooltip[x-placement^='bottom'] {
@@ -685,10 +711,19 @@
 		border-radius: 50%;
 		border: none;
 		margin-right: 8px;
+		flex-basis: 12px;
+		flex-shrink: 0;
+	}
+
+	&__label {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		flex-grow: 1;
 	}
 
 	&__avatar {
-		margin-left: auto;
+		flex-basis: 18px;
+		flex-shrink: 0;
 	}
 }
 

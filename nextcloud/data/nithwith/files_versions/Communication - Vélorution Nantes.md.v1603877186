@@ -1,0 +1,37 @@
+### Comment utiliser les outils de communication du collectif Vélorution Nantes ?
+
+Nous vous conseillons fortement de créer votre compte d'abord depuis un ordinateur. Une fois configuré, vous pourrez utiliser votre sur votre smartphone (rdv à l'étape 3).
+
+#### Etape 1 : Créer son compte sur "Element"
+
+* Rdv à cette URL : <https://app.element.io/#/register>
+* Créer login/mot de passe Attention 
+
+Si vous ne renseignez pas d'adresse mail pour récuperer votre mot de passe, attention a bien enregistrer votre clé de récupération.
+
+#### Etape 2 : Rejoindre la communauté "Vélorution Nantes"
+
+* Rdv à cette URL : <https://app.element.io/?pk_vid=16038116230ee2b2#/group/+vrn:matrix.org>
+* Cliquer sur "Rejoindre la communauté" (en haut à droite)
+* Cliquer sur "Place publique"
+
+#### Etape 3 : Utiliser sur votre mobile (Optionnel)
+
+En fonction de votre téléphone vous pouvez télécharger les appli suivantes, puis vous connecter à votre compte créé dans les étapes ci dessus. 
+
+* [Play store](https://play.google.com/store/apps/details?id=im.vector.app&hl=fr&gl=US) (Android)
+* [Apple Store ](https://apps.apple.com/ci/app/element-previously-riot-im/id1083446067)(Apple)
+
+### Pourquoi cet outil ?
+
+L'écosystème de messagerie Matrix à été choisi suivant les critères suivants :
+
+* Open source : Liberté d'utilisation / contrôle sur le code du logiciel
+* Décentralisé : Autonomie et résilience du réseau  
+* Multi plateforme : Clients PC / Mobile 
+* Sécurisé : Tunnel de communication chiffré de bout en bout
+
+Plus d'informations ici :
+
+* [Site Web du reseau Matrix](https://matrix.org/)
+* [Site Web du client Element](https://element.io/why-element)

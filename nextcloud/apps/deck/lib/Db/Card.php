@@ -24,9 +24,10 @@
 namespace OCA\Deck\Db;
 
 use DateTime;
+use DateTimeZone;
+use Sabre\VObject\Component\VCalendar;
 
 class Card extends RelationalEntity {
-
 	protected $title;
 	protected $description;
 	protected $descriptionPrev;
@@ -49,10 +50,10 @@ class Card extends RelationalEntity {
 
 	private $databaseType = 'sqlite';
 
-	const DUEDATE_FUTURE = 0;
-	const DUEDATE_NEXT = 1;
-	const DUEDATE_NOW = 2;
-	const DUEDATE_OVERDUE = 3;
+	public const DUEDATE_FUTURE = 0;
+	public const DUEDATE_NEXT = 1;
+	public const DUEDATE_NOW = 2;
+	public const DUEDATE_OVERDUE = 3;
 
 	public function __construct() {
 		$this->addType('id', 'integer');
@@ -119,4 +120,39 @@ class Card extends RelationalEntity {
 		return $json;
 	}
 
+	public function getCalendarObject(): VCalendar {
+		$calendar = new VCalendar();
+		$event = $calendar->createComponent('VTODO');
+		$event->UID = 'deck-card-' . $this->getId();
+		if ($this->getDuedate()) {
+			$creationDate = new DateTime();
+			$creationDate->setTimestamp($this->createdAt);
+			$event->DTSTAMP = $creationDate;
+			$event->DUE = new DateTime($this->getDuedate(true), new DateTimeZone('UTC'));
+		}
+		$event->add('RELATED-TO', 'deck-stack-' . $this->getStackId());
+
+		// FIXME: For write support: CANCELLED / IN-PROCESS handling
+		$event->STATUS = $this->getArchived() ? "COMPLETED" : "NEEDS-ACTION";
+		if ($this->getArchived()) {
+			$date = new DateTime();
+			$date->setTimestamp($this->getLastModified());
+			$event->COMPLETED = $date;
+			//$event->add('PERCENT-COMPLETE', 100);
+		}
+		if (count($this->getLabels()) > 0) {
+			$event->CATEGORIES = array_map(function ($label) {
+				return $label->getTitle();
+			}, $this->getLabels());
+		}
+
+		$event->SUMMARY = $this->getTitle();
+		$event->DESCRIPTION = $this->getDescription();
+		$calendar->add($event);
+		return $calendar;
+	}
+
+	public function getCalendarPrefix(): string {
+		return 'card';
+	}
 }

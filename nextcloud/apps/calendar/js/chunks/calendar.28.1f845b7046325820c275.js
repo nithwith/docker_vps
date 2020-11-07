@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[28],{426:function(e,t,n){e.exports=function(){"use strict";return{code:"he",dir:"rtl",buttonText:{prev:"הקודם",next:"הבא",today:"היום",month:"חודש",week:"שבוע",day:"יום",list:"סדר יום"},allDayText:"כל היום",eventLimitText:"אחר",noEventsMessage:"אין אירועים להצגה",weekLabel:"שבוע"}}()}}]);
+//# sourceMappingURL=calendar.28.1f845b7046325820c275.js.map

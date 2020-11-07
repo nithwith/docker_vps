@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[32],{514:function(e,t,n){e.exports=function(){"use strict";return{code:"hu",week:{dow:1,doy:4},buttonText:{prev:"vissza",next:"előre",today:"ma",month:"Hónap",week:"Hét",day:"Nap",list:"Napló"},weekLabel:"Hét",allDayText:"Egész nap",eventLimitText:"további",noEventsMessage:"Nincs megjeleníthető esemény"}}()}}]);
-//# sourceMappingURL=calendar.32.593d28e93f60fe6e0db8.js.map

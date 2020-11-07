@@ -23,7 +23,6 @@
 
 namespace OCA\Deck\Db;
 
-
 class Circle extends RelationalObject {
 
 	/** @var \OCA\Circles\Model\Circle */
@@ -39,7 +38,8 @@ class Circle extends RelationalObject {
 			'uid' => $this->object->getUniqueId(),
 			'displayname' => $this->object->getName(),
 			'typeString' => $this->object->getTypeString(),
-			'circleOwner' => $this->object->getOwner()
+			'circleOwner' => $this->object->getOwner(),
+			'type' => 7
 		];
 	}
 }

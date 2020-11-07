@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[42],{440:function(e,t,n){e.exports=function(){"use strict";return{code:"mk",buttonText:{prev:"претходно",next:"следно",today:"Денес",month:"Месец",week:"Недела",day:"Ден",list:"График"},weekLabel:"Сед",allDayText:"Цел ден",eventLimitText:function(e){return"+повеќе "+e},noEventsMessage:"Нема настани за прикажување"}}()}}]);
+//# sourceMappingURL=calendar.42.8554253547515e0ab2f3.js.map

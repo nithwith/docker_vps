@@ -33,13 +33,11 @@ use OCA\Deck\NoPermissionException;
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\Entity;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
-use OCP\AppFramework\QueryException;
 use OCP\IConfig;
 use OCP\IGroupManager;
 use OCP\ILogger;
 use OCP\IUserManager;
 use OCP\Share\IManager;
-
 
 class PermissionService {
 
@@ -135,7 +133,7 @@ class PermissionService {
 	 */
 	public function checkPermission($mapper, $id, $permission, $userId = null) {
 		$boardId = $id;
-		if ($mapper instanceof IPermissionMapper) {
+		if ($mapper instanceof IPermissionMapper && !($mapper instanceof BoardMapper)) {
 			$boardId = $mapper->findBoardId($id);
 		}
 		if ($boardId === null) {
@@ -234,11 +232,11 @@ class PermissionService {
 			return [];
 		}
 
+		$users = [];
 		$owner = $this->userManager->get($board->getOwner());
 		if ($owner === null) {
 			$this->logger->info('No owner found for board ' . $board->getId());
 		} else {
-			$users = [];
 			$users[$owner->getUID()] = new User($owner);
 		}
 		$acls = $this->aclMapper->findAll($boardId);
@@ -260,6 +258,27 @@ class PermissionService {
 				}
 				foreach ($group->getUsers() as $user) {
 					$users[$user->getUID()] = new User($user);
+				}
+			}
+
+			if ($this->circlesEnabled && $acl->getType() === Acl::PERMISSION_TYPE_CIRCLE) {
+				try {
+					$circle = \OCA\Circles\Api\v1\Circles::detailsCircle($acl->getParticipant(), true);
+					if ($circle === null) {
+						$this->logger->info('No circle found for acl rule ' . $acl->getId());
+						continue;
+					}
+
+					foreach ($circle->getMembers() as $member) {
+						$user = $this->userManager->get($member->getUserId());
+						if ($user === null) {
+							$this->logger->info('No user found for circle member ' . $member->getUserId());
+						} else {
+							$users[$member->getUserId()] = new User($user);
+						}
+					}
+				} catch (\Exception $e) {
+					$this->logger->info('Member not found in circle that was accessed. This should not happen.');
 				}
 			}
 		}

@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[59],{541:function(e,t,n){e.exports=function(){"use strict";return{code:"th",week:{dow:1,doy:4},buttonText:{prev:"ก่อนหน้า",next:"ถัดไป",prevYear:"ปีก่อนหน้า",nextYear:"ปีถัดไป",year:"ปี",today:"วันนี้",month:"เดือน",week:"สัปดาห์",day:"วัน",list:"กำหนดการ"},weekLabel:"สัปดาห์",allDayText:"ตลอดวัน",eventLimitText:"เพิ่มเติม",noEventsMessage:"ไม่มีกิจกรรมที่จะแสดง"}}()}}]);
-//# sourceMappingURL=calendar.59.6186e0fd464dce946d5f.js.map

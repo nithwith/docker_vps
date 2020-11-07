@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[24],{506:function(e,t,n){e.exports=function(){"use strict";return{code:"fi",week:{dow:1,doy:4},buttonText:{prev:"Edellinen",next:"Seuraava",today:"Tänään",month:"Kuukausi",week:"Viikko",day:"Päivä",list:"Tapahtumat"},weekLabel:"Vk",allDayText:"Koko päivä",eventLimitText:"lisää",noEventsMessage:"Ei näytettäviä tapahtumia"}}()}}]);
-//# sourceMappingURL=calendar.24.932db3921229d2150327.js.map

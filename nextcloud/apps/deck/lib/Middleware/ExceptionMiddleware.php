@@ -25,13 +25,15 @@ namespace OCA\Deck\Middleware;
 
 use OCA\Deck\Controller\PageController;
 use OCA\Deck\StatusException;
+use OCA\Deck\Exceptions\ConflictException;
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Middleware;
 use OCP\AppFramework\Http\JSONResponse;
+use OCP\AppFramework\OCS\OCSException;
+use OCP\AppFramework\OCSController;
 use OCP\ILogger;
 use OCP\Util;
 use OCP\IConfig;
-
 
 class ExceptionMiddleware extends Middleware {
 
@@ -61,9 +63,29 @@ class ExceptionMiddleware extends Middleware {
 	 * @throws \Exception
 	 */
 	public function afterException($controller, $methodName, \Exception $exception) {
+		if (get_class($controller) === PageController::class) {
+			throw $exception;
+		}
+
+		if ($exception instanceof ConflictException) {
+			if ($this->config->getSystemValue('loglevel', Util::WARN) === Util::DEBUG) {
+				$this->logger->logException($exception);
+			}
+			return new JSONResponse([
+				'status' => $exception->getStatus(),
+				'message' => $exception->getMessage(),
+				'data' => $exception->getData(),
+			], $exception->getStatus());
+		}
+		
 		if ($exception instanceof StatusException) {
 			if ($this->config->getSystemValue('loglevel', Util::WARN) === Util::DEBUG) {
 				$this->logger->logException($exception);
+			}
+
+			if ($controller instanceof OCSController) {
+				$exception = new OCSException($exception->getMessage(), $exception->getStatus(), $exception);
+				throw $exception;
 			}
 			return new JSONResponse([
 				'status' => $exception->getStatus(),
@@ -97,5 +119,4 @@ class ExceptionMiddleware extends Middleware {
 
 		throw $exception;
 	}
-
 }

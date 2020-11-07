@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * Calendar App
@@ -23,6 +24,7 @@ declare(strict_types=1);
 namespace OCA\Calendar\Controller;
 
 use OCP\AppFramework\Controller;
+use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IConfig;
 use OCP\IInitialStateService;
@@ -88,6 +90,7 @@ class PublicViewController extends Controller {
 	 *
 	 * @PublicPage
 	 * @NoCSRFRequired
+	 * @NoSameSiteCookieRequired
 	 *
 	 * @param string $token
 	 * @return TemplateResponse
@@ -95,6 +98,10 @@ class PublicViewController extends Controller {
 	public function publicIndexForEmbedding(string $token):TemplateResponse {
 		$response = $this->publicIndex($token, 'base');
 		$response->addHeader('X-Frame-Options', 'ALLOW');
+
+		$csp = new ContentSecurityPolicy();
+		$csp->addAllowedFrameAncestorDomain('*');
+		$response->setContentSecurityPolicy($csp);
 
 		return $response;
 	}
@@ -113,6 +120,7 @@ class PublicViewController extends Controller {
 		$defaultSkipPopover = $this->config->getAppValue($this->appName, 'skipPopover', 'yes');
 		$defaultTimezone = $this->config->getAppValue($this->appName, 'timezone', 'automatic');
 		$defaultSlotDuration = $this->config->getAppValue($this->appName, 'slotDuration', '00:30:00');
+		$defaultShowTasks = $this->config->getAppValue($this->appName, 'showTasks', 'yes');
 
 		$appVersion = $this->config->getAppValue($this->appName, 'installed_version');
 
@@ -126,6 +134,8 @@ class PublicViewController extends Controller {
 		$this->initialStateService->provideInitialState($this->appName, 'talk_enabled', false);
 		$this->initialStateService->provideInitialState($this->appName, 'timezone', $defaultTimezone);
 		$this->initialStateService->provideInitialState($this->appName, 'slot_duration', $defaultSlotDuration);
+		$this->initialStateService->provideInitialState($this->appName, 'show_tasks', $defaultShowTasks === 'yes');
+		$this->initialStateService->provideInitialState($this->appName, 'tasks_enabled', false);
 
 		return new TemplateResponse($this->appName, 'main', [
 			'share_url' => $this->getShareURL(),

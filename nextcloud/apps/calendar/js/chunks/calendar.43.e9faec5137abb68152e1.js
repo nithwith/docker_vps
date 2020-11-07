@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[43],{441:function(e,a,n){e.exports=function(){"use strict";return{code:"ms",week:{dow:1,doy:7},buttonText:{prev:"Sebelum",next:"Selepas",today:"hari ini",month:"Bulan",week:"Minggu",day:"Hari",list:"Agenda"},weekLabel:"Mg",allDayText:"Sepanjang hari",eventLimitText:function(e){return"masih ada "+e+" acara"},noEventsMessage:"Tiada peristiwa untuk dipaparkan"}}()}}]);
+//# sourceMappingURL=calendar.43.e9faec5137abb68152e1.js.map

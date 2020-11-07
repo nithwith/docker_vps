@@ -26,18 +26,22 @@ namespace OCA\Deck\Db;
 
 use OCP\AppFramework\Db\Entity;
 use OCP\IDBConnection;
+use OCP\IGroupManager;
 use OCP\IUserManager;
 
-
 class AssignedUsersMapper extends DeckMapper implements IPermissionMapper {
-
 	private $cardMapper;
 	private $userManager;
+	/**
+	 * @var IGroupManager
+	 */
+	private $groupManager;
 
-	public function __construct(IDBConnection $db, CardMapper $cardMapper, IUserManager $userManager) {
+	public function __construct(IDBConnection $db, CardMapper $cardMapper, IUserManager $userManager, IGroupManager $groupManager) {
 		parent::__construct($db, 'deck_assigned_users', AssignedUsers::class);
 		$this->cardMapper = $cardMapper;
 		$this->userManager = $userManager;
+		$this->groupManager = $groupManager;
 	}
 
 	/**
@@ -78,8 +82,8 @@ class AssignedUsersMapper extends DeckMapper implements IPermissionMapper {
 	 * @return null|Entity
 	 */
 	public function insert(Entity $entity) {
-		$user = $this->userManager->get($entity->getParticipant());
-		if ($user !== null) {
+		$origin = $this->getOrigin($entity);
+		if ($origin !== null) {
 			/** @var AssignedUsers $assignment */
 			$assignment = parent::insert($entity);
 			$this->mapParticipant($assignment);
@@ -89,15 +93,25 @@ class AssignedUsersMapper extends DeckMapper implements IPermissionMapper {
 	}
 
 	public function mapParticipant(AssignedUsers &$assignment) {
-		$userManager = $this->userManager;
-		$assignment->resolveRelation('participant', function() use (&$userManager, &$assignment) {
-			$user = $userManager->get($assignment->getParticipant());
-			if ($user !== null) {
-				return new User($user);
-			}
-			return null;
+		$self = $this;
+		$assignment->resolveRelation('participant', function () use (&$self, &$assignment) {
+			return $self->getOrigin($assignment);
 		});
 	}
 
-
+	private function getOrigin(AssignedUsers $assignment) {
+		if ($assignment->getType() === AssignedUsers::TYPE_USER) {
+			$origin = $this->userManager->get($assignment->getParticipant());
+			return $origin ? new User($origin) : null;
+		}
+		if ($assignment->getType() === AssignedUsers::TYPE_GROUP) {
+			$origin = $this->groupManager->get($assignment->getParticipant());
+			return $origin ? new Group($origin) : null;
+		}
+		if ($assignment->getType() === AssignedUsers::TYPE_CIRCLE) {
+			$origin = $this->groupManager->get($assignment->getParticipant());
+			return $origin ? new Circle($origin) : null;
+		}
+		return null;
+	}
 }

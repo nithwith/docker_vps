@@ -11,26 +11,56 @@
 * 👥 **Sharing of Adressbooks!** You want to share your contacts with your friends or coworkers? No problem!
 * 🙈 **We’re not reinventing the wheel!** Based on the great and open SabreDAV library.
 	</description>
-	<version>3.2.0</version>
+
+	<version>3.4.1</version>
 	<licence>agpl</licence>
+
 	<author>John Molakvoæ</author>
 	<author>Team Popcorn</author>
+
 	<documentation>
 		<user>https://docs.nextcloud.com/server/stable/user_manual/pim/contacts.html</user>
 		<admin>https://docs.nextcloud.com/server/stable/admin_manual/configuration_server/occ_command.html?highlight=occ%20commands#dav-label</admin>
 		<developer>https://github.com/nextcloud/contacts#build-the-app</developer>
 	</documentation>
+	<screenshot>https://raw.githubusercontent.com/nextcloud/screenshots/master/apps/Contacts/contacts.png</screenshot>
+
 	<category>office</category>
 	<category>social</category>
 	<category>organization</category>
+
 	<website>https://github.com/nextcloud/contacts#readme</website>
 	<bugs>https://github.com/nextcloud/contacts/issues</bugs>
 	<repository type="git">https://github.com/nextcloud/contacts.git</repository>
-	<screenshot>https://raw.githubusercontent.com/nextcloud/screenshots/master/apps/Contacts/contacts.png</screenshot>
+
+	<!-- required for dav plugins registration -->
+    <types>
+        <filesystem/>
+    </types>
+
 	<dependencies>
-		<nextcloud min-version="16" max-version="19" />
+		<nextcloud min-version="18" max-version="20" />
 	</dependencies>
+
 	<contactsmenu>
 		<provider>OCA\Contacts\ContactsMenu\Providers\DetailsProvider</provider>
 	</contactsmenu>
+
+	<navigations>
+		<navigation>
+			<name>Contacts</name>
+			<route>contacts.page.index</route>
+			<icon>app.svg</icon>
+			<order>4</order>
+		</navigation>
+	</navigations>
+
+	<background-jobs>
+		      <job>OCA\Contacts\Cron\SocialUpdateRegistration</job>
+	</background-jobs>
+
+	<settings>
+		<admin>OCA\Contacts\Settings\AdminSettings</admin>
+	</settings>
+
 </info>

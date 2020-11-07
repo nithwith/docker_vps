@@ -23,15 +23,13 @@
 
 namespace OCA\Deck\Service;
 
-use OC\Security\CSP\ContentSecurityPolicyManager;
 use OCA\Deck\Db\Attachment;
+use OCA\Deck\Db\AttachmentMapper;
 use OCA\Deck\StatusException;
+use OCA\Deck\Exceptions\ConflictException;
 use OCP\AppFramework\Http\ContentSecurityPolicy;
-use OCP\AppFramework\Http\EmptyContentSecurityPolicy;
 use OCP\AppFramework\Http\FileDisplayResponse;
 use OCP\AppFramework\Http\StreamResponse;
-use OCP\Files\Cache\IScanner;
-use OCP\Files\Folder;
 use OCP\Files\IAppData;
 use OCP\Files\IRootFolder;
 use OCP\Files\NotFoundException;
@@ -44,13 +42,13 @@ use OCP\ILogger;
 use OCP\IRequest;
 
 class FileService implements IAttachmentService {
-
 	private $l10n;
 	private $appData;
 	private $request;
 	private $logger;
 	private $rootFolder;
 	private $config;
+	private $attachmentMapper;
 
 	public function __construct(
 		IL10N $l10n,
@@ -58,7 +56,8 @@ class FileService implements IAttachmentService {
 		IRequest $request,
 		ILogger $logger,
 		IRootFolder $rootFolder,
-		IConfig $config
+		IConfig $config,
+		AttachmentMapper $attachmentMapper
 	) {
 		$this->l10n = $l10n;
 		$this->appData = $appData;
@@ -66,6 +65,7 @@ class FileService implements IAttachmentService {
 		$this->logger = $logger;
 		$this->rootFolder = $rootFolder;
 		$this->config = $config;
+		$this->attachmentMapper = $attachmentMapper;
 	}
 
 	/**
@@ -116,18 +116,18 @@ class FileService implements IAttachmentService {
 	 * @return array
 	 * @throws StatusException
 	 */
-	private function getUploadedFile () {
+	private function getUploadedFile() {
 		$file = $this->request->getUploadedFile('file');
 		$error = null;
 		$phpFileUploadErrors = [
-		UPLOAD_ERR_OK => $this->l10n->t('The file was uploaded'),
-		UPLOAD_ERR_INI_SIZE => $this->l10n->t('The uploaded file exceeds the upload_max_filesize directive in php.ini'),
-		UPLOAD_ERR_FORM_SIZE => $this->l10n->t('The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form'),
-		UPLOAD_ERR_PARTIAL => $this->l10n->t('The file was only partially uploaded'),
-		UPLOAD_ERR_NO_FILE => $this->l10n->t('No file was uploaded'),
-		UPLOAD_ERR_NO_TMP_DIR => $this->l10n->t('Missing a temporary folder'),
-		UPLOAD_ERR_CANT_WRITE => $this->l10n->t('Could not write file to disk'),
-		UPLOAD_ERR_EXTENSION => $this->l10n->t('A PHP extension stopped the file upload'),
+			UPLOAD_ERR_OK => $this->l10n->t('The file was uploaded'),
+			UPLOAD_ERR_INI_SIZE => $this->l10n->t('The uploaded file exceeds the upload_max_filesize directive in php.ini'),
+			UPLOAD_ERR_FORM_SIZE => $this->l10n->t('The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form'),
+			UPLOAD_ERR_PARTIAL => $this->l10n->t('The file was only partially uploaded'),
+			UPLOAD_ERR_NO_FILE => $this->l10n->t('No file was uploaded'),
+			UPLOAD_ERR_NO_TMP_DIR => $this->l10n->t('Missing a temporary folder'),
+			UPLOAD_ERR_CANT_WRITE => $this->l10n->t('Could not write file to disk'),
+			UPLOAD_ERR_EXTENSION => $this->l10n->t('A PHP extension stopped the file upload'),
 		];
 
 		if (empty($file)) {
@@ -146,13 +146,15 @@ class FileService implements IAttachmentService {
 	 * @param Attachment $attachment
 	 * @throws NotPermittedException
 	 * @throws StatusException
+	 * @throws ConflictException
 	 */
 	public function create(Attachment $attachment) {
 		$file = $this->getUploadedFile();
 		$folder = $this->getFolder($attachment);
 		$fileName = $file['name'];
 		if ($folder->fileExists($fileName)) {
-			throw new StatusException('File already exists.');
+			$attachment = $this->attachmentMapper->findByData($attachment->getCardId(), $fileName);
+			throw new ConflictException('File already exists.', $attachment);
 		}
 
 		$target = $folder->newFile($fileName);
@@ -234,14 +236,15 @@ class FileService implements IAttachmentService {
 		} else {
 			$response = new FileDisplayResponse($file);
 		}
-		if ($file->getMimeType() === 'application/pdf') {
-			// We need those since otherwise chrome won't show the PDF file with CSP rule object-src 'none'
-			// https://bugs.chromium.org/p/chromium/issues/detail?id=271452
-			$policy = new ContentSecurityPolicy();
-			$policy->addAllowedObjectDomain('\'self\'');
-			$policy->addAllowedObjectDomain('blob:');
-			$response->setContentSecurityPolicy($policy);
-		}
+		// We need those since otherwise chrome won't show the PDF file with CSP rule object-src 'none'
+		// https://bugs.chromium.org/p/chromium/issues/detail?id=271452
+		$policy = new ContentSecurityPolicy();
+		$policy->addAllowedObjectDomain('\'self\'');
+		$policy->addAllowedObjectDomain('blob:');
+		$policy->addAllowedMediaDomain('\'self\'');
+		$policy->addAllowedMediaDomain('blob:');
+		$response->setContentSecurityPolicy($policy);
+
 		$response->addHeader('Content-Type', $file->getMimeType());
 		return $response;
 	}

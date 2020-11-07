@@ -1,21 +1,20 @@
 { "translations": {
-    "Hours" : "小時",
-    "Minutes" : "分鐘",
     "Personal" : "個人",
     "Done" : "Done",
-    "Close" : "關閉",
+    "Cancel" : "取消",
     "Sharing" : "分享",
-    "Group" : "群組",
-    "Loading" : "Loading",
+    "Can edit" : "Can edit",
+    "Can share" : "Can share",
+    "Delete" : "刪除",
     "Edit" : "編輯",
-    "Share" : "分享",
-    "Create" : "新增",
     "Title" : "標題",
-    "Cancel upload" : "取消上戴",
-    "Modified:" : "修改時間：",
-    "Created:" : "建立時間：",
     "Description" : "描述",
-    "Saved" : "已儲存",
-    "Settings" : "設定"
+    "Save" : "儲存",
+    "Reply" : "回覆",
+    "Update" : "更新",
+    "seconds ago" : "秒前",
+    "Shared with you" : "Shared with you",
+    "Today" : "今日",
+    "Tomorrow" : "明天"
 },"pluralForm" :"nplurals=1; plural=0;"
 }

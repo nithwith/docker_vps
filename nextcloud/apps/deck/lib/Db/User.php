@@ -26,7 +26,6 @@ namespace OCA\Deck\Db;
 use OCP\IUser;
 
 class User extends RelationalObject {
-
 	public function __construct(IUser $user) {
 		$primaryKey = $user->getUID();
 		parent::__construct($primaryKey, $user);
@@ -35,7 +34,8 @@ class User extends RelationalObject {
 	public function getObjectSerialization() {
 		return [
 			'uid' => $this->object->getUID(),
-			'displayname' => $this->object->getDisplayName()
+			'displayname' => $this->object->getDisplayName(),
+			'type' => 0
 		];
 	}
 

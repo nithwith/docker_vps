@@ -39,9 +39,7 @@ use OCA\Deck\StatusException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
 
-
 class StackService {
-
 	private $stackMapper;
 	private $cardMapper;
 	private $boardMapper;
@@ -148,10 +146,13 @@ class StackService {
 		return $stacks;
 	}
 
+	public function findCalendarEntries($boardId) {
+		$this->permissionService->checkPermission(null, $boardId, Acl::PERMISSION_READ);
+		return $this->stackMapper->findAll($boardId);
+	}
+
 	public function fetchDeleted($boardId) {
-		$this->permissionService->checkPermission(
-			$this->boardMapper, $boardId, Acl::PERMISSION_READ
-		);
+		$this->permissionService->checkPermission($this->boardMapper, $boardId, Acl::PERMISSION_READ);
 		$stacks = $this->stackMapper->findDeleted($boardId);
 		$this->enrichStacksWithCards($stacks);
 
@@ -166,7 +167,6 @@ class StackService {
 	 * @throws BadRequestException
 	 */
 	public function findAllArchived($boardId) {
-
 		if (is_numeric($boardId) === false) {
 			throw new BadRequestException('board id must be a number');
 		}
@@ -200,7 +200,6 @@ class StackService {
 	 * @throws BadRequestException
 	 */
 	public function create($title, $boardId, $order) {
-
 		if ($title === false || $title === null) {
 			throw new BadRequestException('title must be provided');
 		}
@@ -245,7 +244,6 @@ class StackService {
 	 * @throws BadRequestException
 	 */
 	public function delete($id) {
-
 		if (is_numeric($id) === false) {
 			throw new BadRequestException('stack id must be a number');
 		}
@@ -284,7 +282,6 @@ class StackService {
 	 * @throws BadRequestException
 	 */
 	public function update($id, $title, $boardId, $order, $deletedAt) {
-
 		if (is_numeric($id) === false) {
 			throw new BadRequestException('stack id must be a number');
 		}
@@ -336,7 +333,6 @@ class StackService {
 	 * @throws BadRequestException
 	 */
 	public function reorder($id, $order) {
-
 		if (is_numeric($id) === false) {
 			throw new BadRquestException('id must be a number');
 		}

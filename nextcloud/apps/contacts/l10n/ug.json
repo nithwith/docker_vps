@@ -1,13 +1,16 @@
 { "translations": {
     "Contacts" : "ئالاقەداشلار",
-    "Loading" : "Loading",
     "Name" : "ئاتى",
     "Title" : "ماۋزۇ",
     "Download" : "چۈشۈر",
     "Delete" : "ئۆچۈر",
+    "Cancel" : "ۋاز كەچ",
     "Groups" : "گۇرۇپپا",
     "Rename" : "ئات ئۆزگەرت",
     "First name" : "ئاتى",
+    "Group name" : "گۇرۇپپا ئاتى",
+    "Close" : "ياپ",
+    "Import" : "ئەكىر",
     "Nickname" : "تەخەللۇس",
     "Notes" : "ئىزاھاتلار",
     "Location" : "ئورنى",
@@ -26,5 +29,5 @@
     "Pager" : "چاقىرغۇ",
     "Voice" : "ئاۋاز",
     "None" : "يوق"
-},"pluralForm" :"nplurals=1; plural=0;"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

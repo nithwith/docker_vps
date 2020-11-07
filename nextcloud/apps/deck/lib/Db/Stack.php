@@ -23,13 +23,14 @@
 
 namespace OCA\Deck\Db;
 
-class Stack extends RelationalEntity {
+use Sabre\VObject\Component\VCalendar;
 
+class Stack extends RelationalEntity {
 	protected $title;
 	protected $boardId;
 	protected $deletedAt = 0;
 	protected $lastModified = 0;
-	protected $cards = array();
+	protected $cards = [];
 	protected $order;
 
 	public function __construct() {
@@ -50,5 +51,18 @@ class Stack extends RelationalEntity {
 			unset($json['cards']);
 		}
 		return $json;
+	}
+
+	public function getCalendarObject(): VCalendar {
+		$calendar = new VCalendar();
+		$event = $calendar->createComponent('VTODO');
+		$event->UID = 'deck-stack-' . $this->getId();
+		$event->SUMMARY = 'List : ' . $this->getTitle();
+		$calendar->add($event);
+		return $calendar;
+	}
+
+	public function getCalendarPrefix(): string {
+		return 'stack';
 	}
 }

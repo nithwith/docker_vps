@@ -23,9 +23,7 @@
 
 namespace OCA\Deck\Collaboration\Resources;
 
-
 use OCA\Deck\Db\Acl;
-use OCA\Deck\Db\Board;
 use OCA\Deck\Db\BoardMapper;
 use OCA\Deck\Service\PermissionService;
 use OCP\AppFramework\Db\DoesNotExistException;
@@ -34,12 +32,10 @@ use OCP\AppFramework\QueryException;
 use OCP\Collaboration\Resources\IManager;
 use OCP\Collaboration\Resources\IProvider;
 use OCP\Collaboration\Resources\IResource;
-use OCP\Collaboration\Resources\ResourceException;
 use OCP\IUser;
 
 class ResourceProvider implements IProvider {
-
-	const RESOURCE_TYPE = 'deck';
+	public const RESOURCE_TYPE = 'deck';
 
 	private $boardMapper;
 	private $permissionService;
@@ -74,7 +70,7 @@ class ResourceProvider implements IProvider {
 	 */
 	public function getResourceRichObject(IResource $resource): array {
 		$board = $this->getBoard($resource);
-		$link = \OC::$server->getURLGenerator()->linkToRoute('deck.page.index') . '#!/board/' . $resource->getId();
+		$link = \OC::$server->getURLGenerator()->linkToRoute('deck.page.index') . '#/board/' . $resource->getId();
 
 		return [
 			'type' => self::RESOURCE_TYPE,
@@ -83,7 +79,6 @@ class ResourceProvider implements IProvider {
 			'link' => $link,
 			'iconUrl' => \OC::$server->getURLGenerator()->imagePath('deck', 'deck-dark.svg')
 		];
-
 	}
 
 	/**

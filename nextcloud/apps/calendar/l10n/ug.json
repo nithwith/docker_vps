@@ -8,6 +8,7 @@
     "Share link" : "Share link",
     "New calendar" : "يېڭى يىلنامە",
     "Cancel" : "ۋاز كەچ",
+    "Actions" : "مەشغۇلاتلار",
     "Email" : "تورخەت",
     "never" : "ھەرگىز",
     "Repeat" : "قايتىلا",
@@ -21,5 +22,5 @@
     "Location" : "ئورنى",
     "Description" : "چۈشەندۈرۈش",
     "Play" : "چال"
-},"pluralForm" :"nplurals=1; plural=0;"
+},"pluralForm" :"nplurals=2; plural=(n != 1);"
 }
